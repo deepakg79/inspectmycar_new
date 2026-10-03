@@ -509,7 +509,7 @@ export default function ChatBot({ forceOpen, setForceOpen, initialPlan }: ChatBo
 
             if (!latestAvailability.available) {
                 setToast({
-                    msg: `This ${selectedCity} slot is already reserved. Please choose another time.`,
+                    msg: `This ${selectedCity} slot is already reserved or No inspector is available. Please select another slot.`,
                     type: "error",
                 });
                 await fetchBookings();
