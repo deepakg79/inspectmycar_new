@@ -632,7 +632,7 @@ setIsConfirmed(true);
                                             Select Inspection City
                                         </p>
                                         <p className="text-xs font-bold text-slate-500 mt-1">
-                                           PDI pricing will update automatically based on your selected city.
+                                           PDI price varies by city. Select your city to see the estimated price.
                                         </p>
                                     </div>
                                     <span className="text-lg">📍</span>

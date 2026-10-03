@@ -591,7 +591,7 @@ const latestAvailability: {
                                         Inspection City
                                     </p>
                                     <p className="text-xs font-bold text-slate-500 mt-1">
-                                        Used-car PDI pricing updates automatically
+                                        PDI price varies by city. Select your city to see the estimated price.
                                     </p>
                                 </div>
 
