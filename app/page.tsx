@@ -78,11 +78,18 @@ export default function Home() {
 
                             <select
                                 value={selectedCity}
-                                onChange={(e) =>
-                                    setCity(
-                                        e.target.value as CityName
-                                    )
-                                }
+onChange={(e) => {
+    const nextCity =
+        e.target.value as CityName;
+
+    setCity(nextCity);
+
+    window.dispatchEvent(
+        new CustomEvent("cityChanged", {
+            detail: nextCity,
+        })
+    );
+}}
                                 className="bg-transparent font-black text-indigo-600 text-sm focus:outline-none cursor-pointer"
                             >
                                 {cities.map((cityName) => (
