@@ -420,6 +420,13 @@ Sample Report
                                 ⚙️ How It Works
                             </Link>
 
+<Link
+    href="/sample-report"
+    onClick={closeAllMenus}
+    className="block py-4 font-bold text-slate-800 hover:text-indigo-600 transition"
+>
+    📄 Sample Report
+</Link>
                             <Link
                                 href="/faqs"
                                 onClick={closeAllMenus}
