@@ -344,30 +344,27 @@ A comprehensive vehicle inspection report combines a structured 400-point inspec
                     </p>
 
                 </div>
-                
-                            <div className="flex  gap-8 mt-8 justify-center text-center">
-                            <span className="rounded-full bg-white/10 px-4 py-2 text-xl font-semibold text-black">
-                                ✓ 400-Point Inspection
-                            </span>
+<div className="mt-8 flex flex-wrap justify-center gap-2.5 sm:gap-4">
+    <span className="rounded-full bg-white/10 px-3.5 py-2 text-xs font-semibold text-black sm:px-4 sm:text-base">
+        ✓ 400-Point Inspection
+    </span>
 
-                            <span className="rounded-full bg-white/10 px-4 py-2 text-xl font-semibold text-black">
-                                ✓ AI Summary
-                            </span>
+    <span className="rounded-full bg-white/10 px-3.5 py-2 text-xs font-semibold text-black sm:px-4 sm:text-base">
+        ✓ AI Summary
+    </span>
 
-                            <span className="rounded-full bg-white/10 px-4 py-2 text-xl font-semibold text-black">
-                                ✓ Photo Evidence
-                            </span>
+    <span className="rounded-full bg-white/10 px-3.5 py-2 text-xs font-semibold text-black sm:px-4 sm:text-base">
+        ✓ Photo Evidence
+    </span>
 
-                            <span className="rounded-full bg-white/10 px-4 py-2 text-xl font-semibold text-black">
-                                ✓ Tyre Analysis
-                            </span>
+    <span className="rounded-full bg-white/10 px-3.5 py-2 text-xs font-semibold text-black sm:px-4 sm:text-base">
+        ✓ Tyre Analysis
+    </span>
 
-                            <span className="rounded-full bg-white/10 px-4 py-2 text-xl font-semibold text-black">
-                                ✓ Overall Health Score
-                            </span>
-
-
-                            </div>
+    <span className="rounded-full bg-white/10 px-3.5 py-2 text-xs font-semibold text-black sm:px-4 sm:text-base">
+        ✓ Overall Health Score
+    </span>
+</div>
             </section>
 
 
