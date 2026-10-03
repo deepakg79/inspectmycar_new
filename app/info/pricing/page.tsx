@@ -99,7 +99,14 @@ export default function Pricing() {
             planType: "Luxury" as const,
         },
     ];
-
+const visibleNewCarPlans =
+    selectedCity === "Pune"
+        ? plans
+        : plans.filter(
+              (plan) =>
+                  plan.planType === "Standard-OBD" ||
+                  plan.planType === "Luxury"
+          );
     /**
      * =========================================================
      * USED CAR PLANS
@@ -246,9 +253,14 @@ export default function Pricing() {
 
             <section id="new-car-pricing" />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto items-stretch">
-
-                {plans.map((plan, i) => (
+<div
+    className={`grid grid-cols-1 ${
+        selectedCity === "Pune"
+            ? "sm:grid-cols-2 lg:grid-cols-4"
+            : "sm:grid-cols-2 lg:grid-cols-2"
+    } gap-8 max-w-6xl mx-auto items-stretch`}
+>
+    {visibleNewCarPlans.map((plan, i) => (
 
                     <div
                         key={i}

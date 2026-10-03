@@ -153,36 +153,57 @@ export default function ChatBot({ forceOpen, setForceOpen, initialPlan }: ChatBo
         ]);
     }, [open, selectedCity]);
 
-    useEffect(() => {
-        if (!initialPlan) return;
+useEffect(() => {
+    if (!initialPlan) return;
 
-        setForm(prev => ({
+    const isPune = selectedCity === "Pune";
+
+    setForm(prev => ({
+        ...prev,
+        basic:
+            isPune && initialPlan === "Basic",
+        obd:
+            isPune && initialPlan === "Standard-OBD",
+    }));
+}, [initialPlan, selectedCity]);
+useEffect(() => {
+    if (!form.model) return;
+
+    const selectedModel = getSelectedModel();
+
+    if (!selectedModel) return;
+
+    setForm(prev => {
+        const basic =
+            selectedCity === "Pune"
+                ? prev.basic
+                : false;
+
+        const obd =
+            selectedCity === "Pune"
+                ? prev.obd
+                : false;
+
+        return {
             ...prev,
-            basic: false,
-            obd: false,
-        }));
-
-        switch (initialPlan) {
-            case "Basic":
-                handleBasicChange(true);
-                break;
-
-            case "Standard":
-                handleBasicChange(false);
-                handleOBDChange(false);
-                break;
-
-            case "Standard-OBD":
-                handleBasicChange(false);
-                handleOBDChange(true);
-                break;
-
-            case "Luxury":
-                handleBasicChange(false);
-                handleOBDChange(false);
-                break;
-        }
-    }, [initialPlan]);
+            basic,
+            obd,
+            price: calculatePdiPrice(
+                selectedModel.type,
+                basic,
+                obd,
+                fuelType
+            ),
+        };
+    });
+}, [
+    initialPlan,
+    selectedCity,
+    fuelType,
+    form.model,
+    form.brand,
+    carData,
+]);
 
     const fetchBlockedSlots = async () => {
         try {
@@ -322,34 +343,55 @@ export default function ChatBot({ forceOpen, setForceOpen, initialPlan }: ChatBo
         setForm({ ...form, brand: brandName, model: "", price: 0 });
     };
 
-    const calculatePdiPrice = (
-        vehicleType: string,
-        basic: boolean,
-        obd: boolean,
-        selectedFuelType: FuelType = fuelType
-    ): number => {
-        // EV has one fixed city-specific price.
-        // Basic / OBD do not modify EV pricing.
-        if (selectedFuelType === "ev") {
-            return cityPricing.ev;
+const calculatePdiPrice = (
+    vehicleType: string,
+    basic: boolean,
+    obd: boolean,
+    selectedFuelType: FuelType = fuelType
+): number => {
+    // EV has one fixed city-specific price.
+    if (selectedFuelType === "ev") {
+        return Number(cityPricing.ev) || 0;
+    }
+
+    // Luxury pricing
+    if (vehicleType === "Luxury") {
+        const basePrice = Number(newLuxuryPrice()) || 0;
+
+        // Basic and OBD options are available only in Pune.
+        if (selectedCity === "Pune") {
+            if (basic) {
+                return Math.max(0, basePrice - 200);
+            }
+
+            if (obd) {
+                return basePrice + 799;
+            }
         }
 
-        // Luxury pricing remains independent of city/fuel type.
-        if (vehicleType === "Luxury") {
-            const basePrice = newLuxuryPrice();
+        return basePrice;
+    }
 
-            if (basic) return basePrice - 200;
-            if (obd) return basePrice + 799;
-
-            return basePrice;
+    // Basic / OBD options are available only in Pune.
+    if (selectedCity === "Pune") {
+        if (basic) {
+            return Number(
+                newCarFuelPrice("withoutGauge")
+            ) || 0;
         }
 
-        // Petrol / Diesel / CNG / Hybrid use the standard fuel pricing.
-        return newCarFuelPrice(
-            basic ? "withoutGauge" : obd ? "withOBD" : "withGauge"
-        );
-    };
+        if (obd) {
+            return Number(
+                newCarFuelPrice("withOBD")
+            ) || 0;
+        }
+    }
 
+    // Outside Pune, use the normal standard PDI price.
+    return Number(
+        newCarFuelPrice("withGauge")
+    ) || 0;
+};
     const getSelectedModel = (modelName: string = form.model) => {
         const selectedBrand = carData.find(
             b => b.brand === form.brand
@@ -377,72 +419,108 @@ export default function ChatBot({ forceOpen, setForceOpen, initialPlan }: ChatBo
         }
     };
 
-    const handleOBDChange = (checked: boolean) => {
-        if (form.basic || fuelType === "ev") return;
+const handleOBDChange = (checked: boolean) => {
+    if (
+        selectedCity !== "Pune" ||
+        form.basic ||
+        fuelType === "ev"
+    ) {
+        return;
+    }
 
-        const selectedModel = getSelectedModel();
+    const selectedModel =
+        getSelectedModel();
 
-        if (!selectedModel) {
-            setForm(prev => ({ ...prev, obd: checked }));
-            return;
-        }
-
+    if (!selectedModel) {
         setForm(prev => ({
             ...prev,
             obd: checked,
-            price: calculatePdiPrice(
-                selectedModel.type,
-                prev.basic,
-                checked,
-                fuelType
-            ),
         }));
-    };
+        return;
+    }
 
-    const handleBasicChange = (checked: boolean) => {
-        if (fuelType === "ev") return;
+    setForm(prev => ({
+        ...prev,
+        obd: checked,
+        price: calculatePdiPrice(
+            selectedModel.type,
+            prev.basic,
+            checked,
+            fuelType
+        ),
+    }));
+};
+const handleBasicChange = (
+    checked: boolean
+) => {
+    if (
+        selectedCity !== "Pune" ||
+        fuelType === "ev"
+    ) {
+        return;
+    }
 
-        const selectedModel = getSelectedModel();
+    const selectedModel =
+        getSelectedModel();
 
-        if (!selectedModel) {
-            setForm(prev => ({
-                ...prev,
-                basic: checked,
-                obd: false,
-            }));
-            return;
-        }
-
+    if (!selectedModel) {
         setForm(prev => ({
             ...prev,
             basic: checked,
-            obd: checked ? false : prev.obd,
-            price: calculatePdiPrice(
-                selectedModel.type,
-                checked,
-                checked ? false : prev.obd,
-                fuelType
-            ),
+            obd: false,
         }));
-    };
+        return;
+    }
 
-    useEffect(() => {
-        if (!form.model) return;
+    setForm(prev => ({
+        ...prev,
+        basic: checked,
+        obd: checked
+            ? false
+            : prev.obd,
+        price: calculatePdiPrice(
+            selectedModel.type,
+            checked,
+            checked
+                ? false
+                : prev.obd,
+            fuelType
+        ),
+    }));
+};
 
-        const selectedModel = getSelectedModel();
+useEffect(() => {
+    if (!form.model) return;
 
-        if (!selectedModel) return;
+    const selectedModel = getSelectedModel();
 
-        setForm(prev => ({
+    if (!selectedModel) return;
+
+    setForm(prev => {
+        // Basic and OBD are Pune-only.
+        const basic =
+            selectedCity === "Pune"
+                ? prev.basic
+                : false;
+
+        const obd =
+            selectedCity === "Pune"
+                ? prev.obd
+                : false;
+
+        return {
             ...prev,
+            basic,
+            obd,
             price: calculatePdiPrice(
                 selectedModel.type,
-                prev.basic,
-                prev.obd,
+                basic,
+                obd,
                 fuelType
             ),
-        }));
-    }, [selectedCity, fuelType]);
+        };
+    });
+}, [selectedCity, fuelType]);
 
     const handleSubmit = async () => {
         const isValidPhone = /^[6-9]\d{9}$/.test(form.phone);
@@ -802,90 +880,128 @@ setIsConfirmed(true);
                                     )}
                                 </div>
 
-                                {/* BASIC OPTION */}
-                                <div
-                                    onClick={() => {
-                                        if (fuelType !== "ev") {
-                                            handleBasicChange(!form.basic);
-                                        }
-                                    }}
-                                    className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all
-    ${fuelType === "ev"
-                                            ? "opacity-40 cursor-not-allowed border-slate-100 bg-slate-50"
-                                            : form.basic
-                                                ? "border-indigo-600 bg-indigo-50 shadow-md cursor-pointer"
-                                                : "border-slate-100 bg-slate-50 hover:border-indigo-200 cursor-pointer"}
-  `}
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <input
-                                            type="checkbox"
-                                            checked={form.basic}
-                                            disabled={fuelType === "ev"}
-                                            onChange={(e) => handleBasicChange(e.target.checked)}
-                                            className="w-5 h-5 accent-indigo-600 pointer-events-none"
-                                        />
-                                        <div>
-                                            <p className="text-sm font-black text-slate-800">
-                                                Basic PDI
-                                            </p>
-                                            <p className="text-xs text-slate-500 font-medium">
-                                                {fuelType === "ev"
-                                                    ? "Not applicable for EV"
-                                                    : "No Gauge Check (₹200 less)"}
-                                            </p>
-                                        </div>
-                                    </div>
+{/* BASIC OPTION — PUNE ONLY */}
+{selectedCity === "Pune" && (
+    <div
+        onClick={() => {
+            if (fuelType !== "ev") {
+                handleBasicChange(!form.basic);
+            }
+        }}
+        className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all
+            ${
+                fuelType === "ev"
+                    ? "opacity-40 cursor-not-allowed border-slate-100 bg-slate-50"
+                    : form.basic
+                        ? "border-indigo-600 bg-indigo-50 shadow-md cursor-pointer"
+                        : "border-slate-100 bg-slate-50 hover:border-indigo-200 cursor-pointer"
+            }
+        `}
+    >
+        <div className="flex items-center gap-3">
 
-                                    {form.basic && (
-                                        <span className="text-[10px] font-black text-indigo-600 bg-white px-3 py-1 rounded-full">
-                                            Selected
-                                        </span>
-                                    )}
-                                </div>
+            <input
+                type="checkbox"
+                checked={form.basic}
+                disabled={fuelType === "ev"}
+                onChange={(e) =>
+                    handleBasicChange(
+                        e.target.checked
+                    )
+                }
+                className="w-5 h-5 accent-indigo-600 pointer-events-none"
+            />
+
+            <div>
+
+                <p className="text-sm font-black text-slate-800">
+                    Basic PDI
+                </p>
+
+                <p className="text-xs text-slate-500 font-medium">
+                    {fuelType === "ev"
+                        ? "Not applicable for EV"
+                        : "No Gauge Check (₹200 less)"}
+                </p>
+
+            </div>
+
+        </div>
+
+        {form.basic && (
+            <span className="text-[10px] font-black text-indigo-600 bg-white px-3 py-1 rounded-full">
+                Selected
+            </span>
+        )}
+
+    </div>
+)}
 
 
-                                {/* OBD OPTION */}
-                                <div
-                                    onClick={() => {
-                                        if (fuelType !== "ev" && !form.basic) {
-                                            handleOBDChange(!form.obd);
-                                        }
-                                    }}
-                                    className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all
-    ${fuelType === "ev" || form.basic
-                                            ? "opacity-40 cursor-not-allowed"
-                                            : form.obd
-                                                ? "border-indigo-600 bg-indigo-50 shadow-md cursor-pointer"
-                                                : "border-slate-100 bg-slate-50 hover:border-indigo-200 cursor-pointer"}
-  `}
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <input
-                                            type="checkbox"
-                                            checked={form.obd}
-                                            disabled={fuelType === "ev" || form.basic}
-                                            onChange={(e) => handleOBDChange(e.target.checked)}
-                                            className="w-5 h-5 accent-indigo-600 pointer-events-none"
-                                        />
-                                        <div>
-                                            <p className="text-sm font-black text-slate-800">
-                                                Include OBD Check
-                                            </p>
-                                            <p className="text-xs text-slate-500 font-medium">
-                                                {fuelType === "ev"
-                                                    ? "Not applicable for EV"
-                                                    : "Adds advanced diagnostics (+ extra fee)"}
-                                            </p>
-                                        </div>
-                                    </div>
+{/* OBD OPTION — PUNE ONLY */}
+{selectedCity === "Pune" && (
+    <div
+        onClick={() => {
+            if (
+                fuelType !== "ev" &&
+                !form.basic
+            ) {
+                handleOBDChange(!form.obd);
+            }
+        }}
+        className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all
+            ${
+                fuelType === "ev" || form.basic
+                    ? "opacity-40 cursor-not-allowed"
+                    : form.obd
+                        ? "border-indigo-600 bg-indigo-50 shadow-md cursor-pointer"
+                        : "border-slate-100 bg-slate-50 hover:border-indigo-200 cursor-pointer"
+            }
+        `}
+    >
+        <div className="flex items-center gap-3">
 
-                                    {form.obd && !form.basic && fuelType !== "ev" && (
-                                        <span className="text-[10px] font-black text-indigo-600 bg-white px-3 py-1 rounded-full">
-                                            Added
-                                        </span>
-                                    )}
-                                </div>
+            <input
+                type="checkbox"
+                checked={form.obd}
+                disabled={
+                    fuelType === "ev" ||
+                    form.basic
+                }
+                onChange={(e) =>
+                    handleOBDChange(
+                        e.target.checked
+                    )
+                }
+                className="w-5 h-5 accent-indigo-600 pointer-events-none"
+            />
+
+            <div>
+
+                <p className="text-sm font-black text-slate-800">
+                    Include OBD Check
+                </p>
+
+                <p className="text-xs text-slate-500 font-medium">
+                    {fuelType === "ev"
+                        ? "Not applicable for EV"
+                        : "Adds advanced diagnostics (+ extra fee)"}
+                </p>
+
+            </div>
+
+        </div>
+
+        {form.obd &&
+            !form.basic &&
+            fuelType !== "ev" && (
+                <span className="text-[10px] font-black text-indigo-600 bg-white px-3 py-1 rounded-full">
+                    Added
+                </span>
+            )}
+
+    </div>
+)}
                             </div>
 
                             {/* Estimated Fee */}
