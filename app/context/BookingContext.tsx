@@ -80,9 +80,11 @@ export function BookingProvider({
     const showNewCarBot =
         pathname.startsWith("/new-cars") ||
         pathname.startsWith("/car-pdi") ||
+        pathname.startsWith("/info/pricing") ||
  pathname.endsWith("/new-cars");
     const showUsedCarBot =
         pathname.startsWith("/used-cars")||
+        pathname.startsWith("/info/pricing") ||
 pathname.endsWith("/used-cars");
     /* ---------------------------------------------------------------------- */
     /*                               NEW CAR                                  */
