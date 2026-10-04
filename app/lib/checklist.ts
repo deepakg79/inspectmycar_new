@@ -244,15 +244,15 @@ const checklist = [
             },
             {
                 text: "Clutch: Check for vibration",
-                notFor: ["Petrol", "Diesel"]
+                notFor: ["Automatic"]
             },
             {
                 text: "Clutch: Check for hardness",
-                notFor: ["Petrol", "Diesel"]
+                notFor: ["Automatic"]
             },
             {
                 text: "Clutch: Check for sponginess & slippage",
-                notFor: ["Petrol", "Diesel"]
+                notFor: ["Automatic"]
             },
             "Flywheel: Check for abnormal noise",
             "Pilot Bearing: Check for abnormal noise",
