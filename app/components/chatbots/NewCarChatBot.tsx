@@ -356,12 +356,17 @@ const calculatePdiPrice = (
 
     // Luxury pricing
     if (vehicleType === "Luxury") {
-        const basePrice = Number(newLuxuryPrice()) || 0;
+        const basePrice =
+            Number(newLuxuryPrice()) || 0;
 
-        // Basic and OBD options are available only in Pune.
+        // Basic and OBD options are available
+        // only in Pune.
         if (selectedCity === "Pune") {
             if (basic) {
-                return Math.max(0, basePrice - 200);
+                return Math.max(
+                    0,
+                    basePrice - 200
+                );
             }
 
             if (obd) {
@@ -372,25 +377,45 @@ const calculatePdiPrice = (
         return basePrice;
     }
 
-    // Basic / OBD options are available only in Pune.
+    // Pune pricing
     if (selectedCity === "Pune") {
         if (basic) {
-            return Number(
-                newCarFuelPrice("withoutGauge")
-            ) || 0;
+            return (
+                Number(
+                    newCarFuelPrice(
+                        "withoutGauge"
+                    )
+                ) || 0
+            );
         }
 
         if (obd) {
-            return Number(
-                newCarFuelPrice("withOBD")
-            ) || 0;
+            return (
+                Number(
+                    newCarFuelPrice(
+                        "withOBD"
+                    )
+                ) || 0
+            );
         }
+
+        return (
+            Number(
+                newCarFuelPrice(
+                    "withGauge"
+                )
+            ) || 0
+        );
     }
 
-    // Outside Pune, use the normal standard PDI price.
-    return Number(
-        newCarFuelPrice("withGauge")
-    ) || 0;
+    // All cities except Pune:
+    // Standard Cars with OBD uses the normal
+    // city base price. Do NOT add or subtract ₹200.
+    return (
+        Number(
+            newCarFuelPrice("withOBD")
+        ) || 0
+    );
 };
     const getSelectedModel = (modelName: string = form.model) => {
         const selectedBrand = carData.find(

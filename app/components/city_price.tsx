@@ -587,11 +587,12 @@ export const getNewCarPrice = (
             );
 
 
-case "withOBD":
+        case "withOBD":
 
-    return city === "Pune"
-        ? pricing.newCarFuel + 200
-        : pricing.newCarFuel;
+            return (
+                pricing.newCarFuel +
+                200
+            );
 
 
         case "withGauge":
