@@ -99,14 +99,32 @@ export default function Pricing() {
             planType: "Luxury" as const,
         },
     ];
-const visibleNewCarPlans =
-    selectedCity === "Pune"
-        ? plans
-        : plans.filter(
-              (plan) =>
-                  plan.planType === "Standard-OBD" ||
-                  plan.planType === "Luxury"
-          );
+
+    /**
+     * =========================================================
+     * NEW CAR PLAN VISIBILITY
+     * =========================================================
+     *
+     * Pune:
+     *   Basic + Standard w/o OBD + Standard with OBD + Luxury
+     *
+     * Other cities:
+     *   Standard w/o OBD + Standard with OBD + Luxury
+     *
+     * This keeps the OBD option available while also showing
+     * the non-OBD Standard inspection in every city.
+     */
+
+    const visibleNewCarPlans =
+        selectedCity === "Pune"
+            ? plans
+            : plans.filter(
+                  (plan) =>
+                      plan.planType === "Standard" ||
+                      plan.planType === "Standard-OBD" ||
+                      plan.planType === "Luxury"
+              );
+
     /**
      * =========================================================
      * USED CAR PLANS
@@ -147,30 +165,33 @@ const visibleNewCarPlans =
         <main className="bg-main min-h-screen">
 
             {/* HERO */}
+
             <section className="px-6 pt-32 pb-20">
 
                 <div className="max-w-6xl mx-auto text-center">
 
                     <p className="text-indigo-600 font-black uppercase tracking-[0.35em] text-xs mb-4">
-                         Transparent Costs
+                        Transparent Costs
                     </p>
 
                     <h1 className="heading text-5xl md:text-7xl mb-6">
                         Choose Your{" "}
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-pink-500">
-                              PDI Tier
+                            PDI Tier
                         </span>
                         <br />
                     </h1>
 
                     <p className="subtext text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
-                    <b>Professional,</b> <b>Unbiased</b> inspection with zero
-                    dealership commissions. Choose the plan that
-                    fits your vehicle category.
+                        <b>Professional,</b> <b>Unbiased</b> inspection with zero
+                        dealership commissions. Choose the plan that
+                        fits your vehicle category.
                     </p>
+
                 </div>
 
             </section>
+
 
             {/* =================================================
                 CITY SELECTOR
@@ -207,6 +228,7 @@ const visibleNewCarPlans =
 
             </div>
 
+
             {/* =================================================
                 CURRENT CITY SUMMARY
             ================================================= */}
@@ -234,6 +256,7 @@ const visibleNewCarPlans =
 
             </div>
 
+
             {/* =================================================
                 NEW CARS
             ================================================= */}
@@ -251,16 +274,18 @@ const visibleNewCarPlans =
 
             </div>
 
+
             <section id="new-car-pricing" />
 
-<div
-    className={`grid grid-cols-1 ${
-        selectedCity === "Pune"
-            ? "sm:grid-cols-2 lg:grid-cols-4"
-            : "sm:grid-cols-2 lg:grid-cols-2"
-    } gap-8 max-w-6xl mx-auto items-stretch`}
->
-    {visibleNewCarPlans.map((plan, i) => (
+            <div
+                className={`grid grid-cols-1 ${
+                    selectedCity === "Pune"
+                        ? "sm:grid-cols-2 lg:grid-cols-4"
+                        : "sm:grid-cols-2 lg:grid-cols-3"
+                } gap-8 max-w-6xl mx-auto items-stretch`}
+            >
+
+                {visibleNewCarPlans.map((plan, i) => (
 
                     <div
                         key={i}
@@ -291,6 +316,7 @@ const visibleNewCarPlans =
 
                             </div>
 
+
                             <div className="flex items-baseline gap-1">
 
                                 <span className="text-4xl font-black italic">
@@ -303,6 +329,7 @@ const visibleNewCarPlans =
 
                             </div>
 
+
                             <p
                                 className={`text-xs font-bold mt-2 opacity-70 ${
                                     plan.planType === "Luxury"
@@ -314,6 +341,7 @@ const visibleNewCarPlans =
                             </p>
 
                         </div>
+
 
                         <ul className="space-y-4 mb-10 flex-grow">
 
@@ -350,6 +378,7 @@ const visibleNewCarPlans =
 
                         </ul>
 
+
                         {plan.planType === "Standard-OBD" && (
 
                             <div className="absolute top-6 right-[-60px] w-[220px] rotate-45 bg-emerald-500 text-white text-[10px] font-black py-2 text-center uppercase tracking-widest shadow-md z-20">
@@ -358,6 +387,7 @@ const visibleNewCarPlans =
 
                         )}
 
+
                         {plan.planType === "Luxury" && (
 
                             <div className="absolute top-6 right-[-60px] w-[220px] rotate-45 bg-indigo-600 text-white text-[10px] font-black py-2 text-center uppercase tracking-widest shadow-md z-20">
@@ -365,6 +395,7 @@ const visibleNewCarPlans =
                             </div>
 
                         )}
+
 
                         <button
                             onClick={() =>
@@ -387,49 +418,51 @@ const visibleNewCarPlans =
 
             </div>
 
-{/* =================================================
-    EV PRICING
-================================================= */}
 
-<section className="mt-20">
+            {/* =================================================
+                EV PRICING
+            ================================================= */}
 
-    <div className="rounded-[3rem] bg-emerald-50 border border-emerald-100 p-10 text-center">
+            <section className="mt-20">
 
-        <p className="text-xs font-black uppercase tracking-[0.3em] text-emerald-600">
-            Electric Vehicles
-        </p>
+                <div className="rounded-[3rem] bg-emerald-50 border border-emerald-100 p-10 text-center">
 
-        <h2 className="text-3xl font-black text-slate-900 mt-3">
-            EV PDI Pricing
-        </h2>
+                    <p className="text-xs font-black uppercase tracking-[0.3em] text-emerald-600">
+                        Electric Vehicles
+                    </p>
 
-        <p className="text-slate-500 mt-3">
-            EV pricing for {selectedCity}.
-        </p>
+                    <h2 className="text-3xl font-black text-slate-900 mt-3">
+                        EV PDI Pricing
+                    </h2>
 
-        <div className="mt-8 max-w-sm mx-auto">
+                    <p className="text-slate-500 mt-3">
+                        EV pricing for {selectedCity}.
+                    </p>
 
-            <div className="bg-white rounded-2xl p-8 border-2 border-emerald-400 shadow-sm">
+                    <div className="mt-8 max-w-sm mx-auto">
 
-                <p className="text-xs font-black uppercase tracking-wider text-emerald-600">
-                    EV Inspection
-                </p>
+                        <div className="bg-white rounded-2xl p-8 border-2 border-emerald-400 shadow-sm">
 
-                <p className="text-5xl font-black mt-3 text-slate-900">
-                    ₹{formatPrice(cityPricing.ev)}
-                </p>
+                            <p className="text-xs font-black uppercase tracking-wider text-emerald-600">
+                                EV Inspection
+                            </p>
 
-                <p className="text-sm font-medium text-slate-500 mt-3">
-                    Complete EV Pre-Delivery Inspection
-                </p>
+                            <p className="text-5xl font-black mt-3 text-slate-900">
+                                ₹{formatPrice(cityPricing.ev)}
+                            </p>
 
-            </div>
+                            <p className="text-sm font-medium text-slate-500 mt-3">
+                                Complete EV Pre-Delivery Inspection
+                            </p>
 
-        </div>
+                        </div>
 
-    </div>
+                    </div>
 
-</section>
+                </div>
+
+            </section>
+
 
             {/* =================================================
                 USED CARS
@@ -450,7 +483,9 @@ const visibleNewCarPlans =
 
                 </div>
 
+
                 <section id="used-car-pricing" />
+
 
                 <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
 
@@ -465,6 +500,7 @@ const visibleNewCarPlans =
                                 {plan.name}
                             </h3>
 
+
                             <div className="my-6">
 
                                 <span className="text-5xl font-black">
@@ -473,9 +509,11 @@ const visibleNewCarPlans =
 
                             </div>
 
+
                             <p className="text-slate-500 mb-6">
                                 {plan.subtitle}
                             </p>
+
 
                             <ul className="space-y-3 flex-grow">
 
@@ -485,16 +523,19 @@ const visibleNewCarPlans =
                                         key={feature}
                                         className="flex gap-3"
                                     >
+
                                         <span className="text-emerald-500">
                                             ✓
                                         </span>
 
                                         {feature}
+
                                     </li>
 
                                 ))}
 
                             </ul>
+
 
                             <button
                                 onClick={() =>
@@ -514,6 +555,7 @@ const visibleNewCarPlans =
                 </div>
 
             </section>
+
 
             {/* =================================================
                 FOOTER NOTE
