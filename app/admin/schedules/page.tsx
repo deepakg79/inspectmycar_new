@@ -159,24 +159,24 @@ export default function AdminSchedulesPage() {
     setMounted(true);
     setSelectedDate(getDateOffset(0));
 
-    const unsubscribe = onSnapshot(
-      collection(db, "bookings"),
-      (snapshot) => {
-        const data: Booking[] = snapshot.docs.map((item) => ({
-          id: item.id,
-          ...(item.data() as Omit<Booking, "id">),
-        }));
+const unsubscribe = onSnapshot(
+  collection(db, "bookings"),
+  (snapshot) => {
+    const data: Booking[] = snapshot.docs.map((item) => ({
+      id: item.id,
+      ...(item.data() as Omit<Booking, "id">),
+    }));
 
-        setBookings(data);
-        setLoading(false);
-        setError("");
-      },
-      (err) => {
-        console.error("Failed to load schedules:", err);
-        setError("Unable to load schedules. Please try again.");
-        setLoading(false);
-      }
-    );
+    setBookings(data);
+    setError("");
+    setLoading(false);
+  },
+  (listenerError) => {
+    console.error("Failed to load schedule bookings:", listenerError);
+    setError("Unable to load bookings. Please check your connection and permissions.");
+    setLoading(false);
+  }
+);
 
     return () => unsubscribe();
   }, []);
