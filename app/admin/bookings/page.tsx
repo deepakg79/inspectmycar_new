@@ -517,7 +517,6 @@ InspectMyCar`;
                         </div>
 
                         <div className="flex gap-3 w-full lg:w-auto overflow-x-auto pb-2 lg:pb-0">
-                        <div className="flex gap-3 w-full lg:w-auto overflow-x-auto pb-2 lg:pb-0">
                             <div className="bg-indigo-600 p-6 rounded-[2.5rem] shadow-xl shadow-indigo-200 text-white min-w-[160px]">
                                 <p className="text-[9px] font-black uppercase opacity-60 mb-1">Total Revenue</p>
                                 <p className="text-3xl font-black italic">
