@@ -330,13 +330,16 @@ export default function SampleReportPage() {
                     <p className="text-indigo-600 font-black uppercase tracking-[0.35em] text-xs mb-4">
                         See What a Professional Vehicle Inspection Report Looks Like
                     </p>
-
                     <h1 className="heading text-5xl md:text-7xl mb-6">
-                        InspectMyCar 
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-pink-500">
+
+                        InspectMyCar
+
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600">
+
                             {" "}Sample Report
+
                         </span>
-                        <br />
+
                     </h1>
 
                     <p className="subtext text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">

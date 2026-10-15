@@ -117,13 +117,15 @@ export default function FAQsPage() {
                     <p className="text-indigo-600 font-black uppercase tracking-[0.35em] text-xs mb-4">
                         FAQs
                     </p>
-
                     <h1 className="heading text-5xl md:text-7xl mb-6">
-                        Car PDI 
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-pink-500">
+
+                         Car PDI
+
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600">
+
                             {" "}FAQs
+
                         </span>
-                        <br />
 
                     </h1>
 

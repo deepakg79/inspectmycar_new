@@ -1,1613 +1,1291 @@
 "use client";
 
-
-
 import Link from "next/link";
-
-
 
 import { useEffect } from "react";
 
-
-
 import { useRouter } from "next/navigation";
-
-
 
 import {
 
-  useBooking,
+useBooking,
 
-  type NewCarPlan,
+type NewCarPlan,
 
-  type UsedCarPlan,
+type UsedCarPlan,
 
 } from "@/app/context/BookingContext";
 
-
-
 import {
-  CITY_PRICING,
-  useCityPricing,
-  formatPrice,
-  getNewCarPrice,
-  type CityName,
-} from "@/app/components/city_price";
 
+CITY_PRICING,
+
+useCityPricing,
+
+formatPrice,
+
+getNewCarPrice,
+
+type CityName,
+
+} from "@/app/components/city_price";
 
 type Props = {
 
-  citySlug: string;
+citySlug: string;
 
 };
 
-
-
 export default function CityLandingClient({
 
-  citySlug,
+citySlug,
 
 }: Props) {
 
-  const router = useRouter();
+const router = useRouter();
 
+const {
 
+openNewCarBooking,
 
-  const {
+openUsedCarBooking,
 
-    openNewCarBooking,
+} = useBooking();
 
-    openUsedCarBooking,
+const { setCity } = useCityPricing();
 
-  } = useBooking();
+/**
 
+* The URL is the source of truth for this landing page.
 
+*
 
-  const { setCity } = useCityPricing();
+* localStorage must never decide which city's page is shown.
 
+*/
 
+const normalizedCitySlug = decodeURIComponent(citySlug ?? "")
 
-  /**
+.trim()
 
-   * The URL is the source of truth for this landing page.
+.toLowerCase();
 
-   *
+const getCitySlug = (city: CityName): string => {
 
-   * localStorage must never decide which city's page is shown.
+const configuredName = String(
 
-   */
+CITY_PRICING[city].name ?? city
 
-  const normalizedCitySlug = decodeURIComponent(citySlug ?? "")
+);
 
-    .trim()
+return configuredName
 
-    .toLowerCase();
+.trim()
 
+.toLowerCase()
 
+.replace(/\s+/g, "-");
 
-  const getCitySlug = (city: CityName): string => {
+};
 
-    const configuredName = String(
+const cities = Object.keys(
 
-      CITY_PRICING[city].name ?? city
+CITY_PRICING
 
-    );
+) as CityName[];
 
+const cityName =
 
+cities.find(
 
-    return configuredName
+(city) =>
 
-      .trim()
+getCitySlug(city) ===
 
-      .toLowerCase()
+normalizedCitySlug
 
-      .replace(/\s+/g, "-");
+) ?? null;
 
-  };
+/**
 
+* Synchronize the resolved URL city with the existing
 
+* client-side booking/pricing context.
 
-  const cities = Object.keys(
+*/
 
-    CITY_PRICING
+useEffect(() => {
 
-  ) as CityName[];
+if (cityName) {
 
+setCity(cityName);
 
+}
 
-  const cityName =
+}, [cityName, setCity]);
 
-    cities.find(
+if (!cityName) {
 
-      (city) =>
+return (
 
-        getCitySlug(city) ===
+<main className="flex min-h-screen items-center justify-center bg-slate-50 px-6">
 
-        normalizedCitySlug
+<div className="text-center">
 
-    ) ?? null;
+<h1 className="text-3xl font-black text-slate-900">
 
+City Not Found
 
+</h1>
 
-  /**
+<p className="mt-3 text-slate-500">
 
-   * Synchronize the resolved URL city with the existing
+The requested inspection city is not available.
 
-   * client-side booking/pricing context.
+</p>
 
-   */
+<Link
 
-  useEffect(() => {
+href="/pune"
 
-    if (cityName) {
+className="mt-6 inline-flex rounded-xl bg-indigo-600 px-6 py-3 font-bold text-white transition hover:bg-indigo-700"
 
-      setCity(cityName);
+>
 
-    }
+Go to Pune
 
-  }, [cityName, setCity]);
+</Link>
 
+</div>
 
+</main>
 
-  if (!cityName) {
+);
 
-    return (
+}
 
-      <main className="flex min-h-screen items-center justify-center bg-slate-50 px-6">
+const cityPricing =
 
-        <div className="text-center">
+CITY_PRICING[cityName];
 
-          <h1 className="text-3xl font-black text-slate-900">
+const baseFuelPrice =
 
-            City Not Found
+Number(cityPricing.newCarFuel) || 0;
 
-          </h1>
+const evBasePrice =
 
+Number(cityPricing.ev) || 0;
 
+const usedCarPrice =
 
-          <p className="mt-3 text-slate-500">
+Number(cityPricing.usedCar) || 0;
 
-            The requested inspection city is not available.
+/**
 
-          </p>
+* ==========================================================
 
+* NEW CAR PRICING
 
+* ==========================================================
 
-          <Link
+*
 
-            href="/pune"
+* Pune:
 
-            className="mt-6 inline-flex rounded-xl bg-indigo-600 px-6 py-3 font-bold text-white transition hover:bg-indigo-700"
+*   Without Gauge = Base - ₹200
 
-          >
+*   With Gauge    = Base
 
-            Go to Pune
+*   With OBD      = Base + ₹200
 
-          </Link>
+*
 
-        </div>
+* Other cities:
 
-      </main>
+*   Only Advanced OBD is displayed.
 
-    );
+*   With OBD      = Base
 
-  }
+*
 
+* IMPORTANT:
 
+* Do not add/subtract ₹200 for non-Pune cities.
 
-  const cityPricing =
+*/
 
-    CITY_PRICING[cityName];
+const withoutGaugePrice =
 
+getNewCarPrice(cityName, "fuel", "withoutGauge");
 
+const standardFuelPrice =
 
-  const baseFuelPrice =
+getNewCarPrice(cityName, "fuel", "withGauge");
 
-    Number(cityPricing.newCarFuel) || 0;
+const withObdPrice =
 
+getNewCarPrice(cityName, "fuel", "withOBD");
 
+const standardEvPrice =
 
-  const evBasePrice =
+evBasePrice;
 
-    Number(cityPricing.ev) || 0;
+const handleNewCarBooking = (
 
+plan: NewCarPlan = "Standard"
 
+) => {
 
-  const usedCarPrice =
+setCity(cityName);
 
-    Number(cityPricing.usedCar) || 0;
+openNewCarBooking(plan);
 
+router.push(
 
+`/${getCitySlug(cityName)}/used-cars`,
 
-  /**
+{ scroll: false }
 
-   * ==========================================================
+);
 
-   * NEW CAR PRICING
+};
 
-   * ==========================================================
+const handleUsedCarBooking = (
 
-   *
+plan: UsedCarPlan = "Standard"
 
-   * Pune:
+) => {
 
-   *   Without Gauge = Base - ₹200
+setCity(cityName);
 
-   *   With Gauge    = Base
+openUsedCarBooking(plan);
 
-   *   With OBD      = Base + ₹200
+router.push(
 
-   *
+`/${getCitySlug(cityName)}/new-cars`,
 
-   * Other cities:
+{ scroll: false }
 
-   *   Only Advanced OBD is displayed.
+);
 
-   *   With OBD      = Base
+};
 
-   *
+const handleCityChange = (
 
-   * IMPORTANT:
+selectedCity: string
 
-   * Do not add/subtract ₹200 for non-Pune cities.
+) => {
 
-   */
+const nextCity =
 
+selectedCity as CityName;
 
+if (!CITY_PRICING[nextCity]) {
 
-  const withoutGaugePrice =
-    getNewCarPrice(cityName, "fuel", "withoutGauge");
+return;
 
-  const standardFuelPrice =
-    getNewCarPrice(cityName, "fuel", "withGauge");
+}
 
-  const withObdPrice =
-    getNewCarPrice(cityName, "fuel", "withOBD");
+setCity(nextCity);
 
+router.push(
 
-  const standardEvPrice =
+`/${getCitySlug(nextCity)}`
 
-    evBasePrice;
+);
 
+};
 
+return (
 
-  const handleNewCarBooking = (
+<main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-slate-50 via-white to-indigo-50/40 text-slate-900">
 
-    plan: NewCarPlan = "Standard"
+{/* ======================================================
 
-  ) => {
+BACKGROUND
 
-    setCity(cityName);
+====================================================== */}
 
+<div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
 
+<div className="absolute -left-32 -top-40 h-[34rem] w-[34rem] rounded-full bg-indigo-400/20 blur-[120px] animate-pulse" />
 
-    openNewCarBooking(plan);
+<div
 
+className="absolute -right-32 top-1/3 h-[30rem] w-[30rem] rounded-full bg-indigo-400/20 blur-[120px] animate-pulse"
 
+style={{
 
-    router.push(
+animationDelay: "2s",
 
-      `/${getCitySlug(cityName)}/used-cars`,
+}}
 
-      { scroll: false }
+/>
 
-    );
+<div className="absolute bottom-0 left-1/2 h-[25rem] w-[25rem] -translate-x-1/2 rounded-full bg-indigo-300/20 blur-[120px]" />
 
-  };
+<div
 
+className="absolute inset-0 opacity-[0.03]"
 
+style={{
 
-  const handleUsedCarBooking = (
+backgroundImage:
 
-    plan: UsedCarPlan = "Standard"
+"linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg,#000 1px,transparent 1px)",
 
-  ) => {
+backgroundSize: "60px 60px",
 
-    setCity(cityName);
+}}
 
+/>
 
+</div>
 
-    openUsedCarBooking(plan);
+{/* ======================================================
 
+CITY SELECTOR
 
+====================================================== */}
 
-    router.push(
+<section className="relative mx-auto max-w-7xl px-6 pt-28">
 
-      `/${getCitySlug(cityName)}/new-cars`,
+<div className="flex justify-end">
 
-      { scroll: false }
+<div className="inline-flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/90 px-4 py-3 shadow-lg backdrop-blur-md">
 
-    );
+<span className="text-xs font-black uppercase tracking-wider text-slate-500">
 
-  };
+📍 Select City
 
+</span>
 
+<select
 
-  const handleCityChange = (
+value={cityName}
 
-    selectedCity: string
+onChange={(e) =>
 
-  ) => {
+handleCityChange(e.target.value)
 
-    const nextCity =
+}
 
-      selectedCity as CityName;
+className="cursor-pointer bg-transparent text-sm font-black text-indigo-600 focus:outline-none"
 
+>
 
+{cities.map((city) => (
 
-    if (!CITY_PRICING[nextCity]) {
+<option
 
-      return;
+key={city}
 
-    }
+value={city}
 
+>
 
+{CITY_PRICING[city].name}
 
-    setCity(nextCity);
+</option>
 
+))}
 
+</select>
 
-    router.push(
+</div>
 
-      `/${getCitySlug(nextCity)}`
+</div>
 
-    );
+</section>
 
-  };
+{/* ======================================================
 
+CHOOSE INSPECTION
 
+====================================================== */}
 
-  return (
+<section className="relative z-10 px-6 pb-24">
 
-    <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-slate-50 via-white to-indigo-50/40 text-slate-900">
+<div className="mx-auto max-w-7xl">
 
+<div className="slide-up mb-14 text-center">
 
+<p className="text-xs font-black uppercase tracking-[0.35em] text-indigo-600">
 
-      {/* ======================================================
+OUR SERVICES
 
-          BACKGROUND
+</p>
 
-      ====================================================== */}
+<h2 className="heading mt-4 text-4xl md:text-5xl">
 
+Choose Your Inspection in{" "}
 
+{cityPricing.name}
 
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+</h2>
 
+<p className="subtext mx-auto mt-5 max-w-2xl">
 
+Whether you're taking delivery of a
 
-        <div className="absolute -left-32 -top-40 h-[34rem] w-[34rem] rounded-full bg-indigo-400/20 blur-[120px] animate-pulse" />
+brand-new vehicle or buying a pre-owned
 
+car in {cityPricing.name}, our independent
 
+inspectors help you make the right decision.
 
-        <div
+</p>
 
-          className="absolute -right-32 top-1/3 h-[30rem] w-[30rem] rounded-full bg-pink-400/20 blur-[120px] animate-pulse"
+</div>
 
-          style={{
+<div className="grid gap-8 lg:grid-cols-2">
 
-            animationDelay: "2s",
+{/* =================================================
 
-          }}
+NEW CAR
 
-        />
+================================================= */}
 
+<Link
 
+href={`/${getCitySlug(cityName)}?type=new`}
 
-        <div className="absolute bottom-0 left-1/2 h-[25rem] w-[25rem] -translate-x-1/2 rounded-full bg-cyan-300/20 blur-[120px]" />
+onClick={(event) => {
 
+event.preventDefault();
 
+handleNewCarBooking("Standard");
 
-        <div
+}}
 
-          className="absolute inset-0 opacity-[0.03]"
+className="group card-glass relative overflow-hidden rounded-[2.5rem] border border-indigo-100 p-10 transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl"
 
-          style={{
+>
 
-            backgroundImage:
+<div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-white opacity-0 transition duration-500 group-hover:opacity-100" />
 
-              "linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg,#000 1px,transparent 1px)",
+<div className="relative">
 
-            backgroundSize: "60px 60px",
+<div className="flex items-start justify-between">
 
-          }}
+<div>
 
-        />
+<div className="mb-8 flex h-20 w-20 items-center justify-center rounded-3xl bg-indigo-100 text-5xl transition group-hover:rotate-6">
 
+🚗
 
+</div>
 
-      </div>
+<span className="inline-block rounded-full bg-indigo-100 px-4 py-2 text-xs font-black uppercase tracking-widest text-indigo-700">
 
+New Car PDI
 
+</span>
 
-      {/* ======================================================
+</div>
 
-          CITY SELECTOR
+{/* =================================================
 
-      ====================================================== */}
+NON-PUNE:
 
+Hide "From Without Gauge"
 
+================================================= */}
 
-      <section className="relative mx-auto max-w-7xl px-6 pt-28">
+{cityName === "Pune" && (
 
+<span className="rounded-full bg-indigo-100 px-4 py-2 text-xs font-black uppercase tracking-widest text-indigo-700">
 
+From ₹
 
-        <div className="flex justify-end">
+{formatPrice(
 
+withoutGaugePrice
 
+)}
 
-          <div className="inline-flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/90 px-4 py-3 shadow-lg backdrop-blur-md">
+</span>
 
+)}
 
+</div>
 
-            <span className="text-xs font-black uppercase tracking-wider text-slate-500">
+<h3 className="heading mt-8 mb-4 text-4xl">
 
-              📍 Select City
+Pre-Delivery Inspection
 
-            </span>
+</h3>
 
+<p className="subtext mb-8 leading-relaxed">
 
+Before accepting delivery from the
 
-            <select
+showroom in {cityPricing.name},
 
-              value={cityName}
+let our experts inspect your vehicle
 
-              onChange={(e) =>
+for transport damage, repaint work,
 
-                handleCityChange(e.target.value)
+electronic issues and manufacturing
 
-              }
+defects.
 
-              className="cursor-pointer bg-transparent text-sm font-black text-indigo-600 focus:outline-none"
+</p>
 
-            >
+<div className="grid grid-cols-2 gap-4">
 
-              {cities.map((city) => (
+{[
 
-                <option
+"400 Checkpoints",
 
-                  key={city}
+"Paint Thickness Test",
 
-                  value={city}
+"OBD Diagnostics",
 
-                >
+"Electrical Scan",
 
-                  {CITY_PRICING[city].name}
+"Battery Health",
 
-                </option>
+"Digital Report",
 
-              ))}
+].map((item) => (
 
-            </select>
+<div
 
+key={item}
 
+className="flex items-center gap-3"
 
-          </div>
+>
 
+<div className="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-sm font-black text-indigo-600">
 
+✓
 
-        </div>
+</div>
 
+<span className="text-sm font-semibold">
 
+{item}
 
-      </section>
+</span>
 
+</div>
 
+))}
 
-      {/* ======================================================
+</div>
 
-          CHOOSE INSPECTION
+<div className="mt-10 flex items-center justify-between">
 
-      ====================================================== */}
+<span className="font-black text-indigo-600 transition group-hover:translate-x-2">
 
+Explore Service →
 
+</span>
 
-      <section className="relative z-10 px-6 pb-24">
+<div className="rounded-2xl bg-indigo-600 px-5 py-3 font-black text-white shadow-lg">
 
+NEW CARS
 
+</div>
 
-        <div className="mx-auto max-w-7xl">
+</div>
 
+</div>
 
+</Link>
 
-          <div className="slide-up mb-14 text-center">
+{/* =================================================
 
+USED CAR
 
+================================================= */}
 
-            <p className="text-xs font-black uppercase tracking-[0.35em] text-indigo-600">
+<Link
 
-              OUR SERVICES
+href={`/${getCitySlug(cityName)}?type=used`}
 
-            </p>
+onClick={(event) => {
 
+event.preventDefault();
 
+handleUsedCarBooking("Standard");
 
-            <h2 className="heading mt-4 text-4xl md:text-5xl">
+}}
 
-              Choose Your Inspection in{" "}
+className="group relative overflow-hidden rounded-[2.5rem] bg-slate-900 p-10 text-white transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl"
 
-              {cityPricing.name}
+>
 
-            </h2>
+<div className="absolute inset-0 bg-gradient-to-br from-slate-800 via-slate-900 to-black opacity-0 transition duration-500 group-hover:opacity-100" />
 
+<div className="relative">
 
+<div className="flex items-start justify-between">
 
-            <p className="subtext mx-auto mt-5 max-w-2xl">
+<div>
 
-              Whether you're taking delivery of a
+<div className="mb-8 flex h-20 w-20 items-center justify-center rounded-3xl bg-white/10 text-5xl transition group-hover:-rotate-6">
 
-              brand-new vehicle or buying a pre-owned
+🚙
 
-              car in {cityPricing.name}, our independent
+</div>
 
-              inspectors help you make the right decision.
+<span className="inline-block rounded-full bg-indigo-500/20 px-4 py-2 text-xs font-black uppercase tracking-widest text-indigo-300">
 
-            </p>
+Used Car PPI
 
+</span>
 
+</div>
 
-          </div>
+<span className="rounded-full bg-indigo-500/20 px-4 py-2 text-xs font-black uppercase tracking-widest text-indigo-300">
 
+From ₹
 
+{formatPrice(usedCarPrice)}
 
-          <div className="grid gap-8 lg:grid-cols-2">
+</span>
 
+</div>
 
+<h3 className="!text-white mt-8 mb-4 text-4xl">
 
-            {/* =================================================
+Pre-Purchase Inspection
 
-                NEW CAR
+</h3>
 
-            ================================================= */}
+<p className="mb-8 leading-relaxed text-slate-300">
 
+Avoid buying a problematic vehicle
 
+in {cityPricing.name}. We inspect
 
-            <Link
+accident history, engine condition,
 
-              href={`/${getCitySlug(cityName)}?type=new`}
+suspension, electronics and hidden
 
-              onClick={(event) => {
+defects before you pay.
 
-                event.preventDefault();
+</p>
 
-                handleNewCarBooking("Standard");
+<div className="grid grid-cols-2 gap-4">
 
-              }}
+{[
 
-              className="group card-glass relative overflow-hidden rounded-[2.5rem] border border-indigo-100 p-10 transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl"
+"Engine Health",
 
-            >
+"Accident Detection",
 
+"Flood Damage",
 
+"OBD Scan",
 
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-white opacity-0 transition duration-500 group-hover:opacity-100" />
+"Suspension Check",
 
+"Road Test",
 
+].map((item) => (
 
-              <div className="relative">
+<div
 
+key={item}
 
+className="flex items-center gap-3"
 
-                <div className="flex items-start justify-between">
+>
 
+<div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-sm font-black text-indigo-300">
 
+✓
 
-                  <div>
+</div>
 
+<span className="text-sm font-semibold text-slate-200">
 
+{item}
 
-                    <div className="mb-8 flex h-20 w-20 items-center justify-center rounded-3xl bg-indigo-100 text-5xl transition group-hover:rotate-6">
+</span>
 
-                      🚗
+</div>
 
-                    </div>
+))}
 
+</div>
 
+<div className="mt-10 flex items-center justify-between">
 
-                    <span className="inline-block rounded-full bg-indigo-100 px-4 py-2 text-xs font-black uppercase tracking-widest text-indigo-700">
+<span className="font-black text-indigo-300 transition group-hover:translate-x-2">
 
-                      New Car PDI
+Explore Service →
 
-                    </span>
+</span>
 
+<div className="rounded-2xl bg-white px-5 py-3 font-black text-slate-900 shadow-lg">
 
+USED CARS
 
-                  </div>
+</div>
 
+</div>
 
+</div>
 
-                  {/* =================================================
+</Link>
 
-                      NON-PUNE:
+</div>
 
-                      Hide "From Without Gauge"
+</div>
 
-                  ================================================= */}
+</section>
 
+{/* ======================================================
 
+FINAL CTA
 
-                  {cityName === "Pune" && (
+====================================================== */}
 
-                    <span className="rounded-full bg-emerald-100 px-4 py-2 text-xs font-black uppercase tracking-widest text-emerald-700">
+<section className="px-6 pb-32">
 
-                      From ₹
+<div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-indigo-600 via-indigo-600 to-indigo-600 shadow-[0_40px_120px_rgba(99,102,241,0.35)] lg:rounded-[3rem]">
 
-                      {formatPrice(
+<div className="grid items-center lg:grid-cols-2">
 
-                        withoutGaugePrice
+{/* LEFT */}
 
-                      )}
+<div className="p-12 text-white lg:p-16">
 
-                    </span>
+<span className="inline-flex rounded-full bg-white/15 px-5 py-2 text-xs font-black uppercase tracking-[0.3em] backdrop-blur-xl">
 
-                  )}
+Book Your Inspection in{" "}
 
+{cityPricing.name}
 
+</span>
 
-                </div>
+<h2 className="mt-8 text-5xl font-black leading-tight lg:text-6xl">
 
+Don't Accept
 
+<br />
 
-                <h3 className="heading mt-8 mb-4 text-4xl">
+A Defective
 
-                  Pre-Delivery Inspection
+<br />
 
-                </h3>
+New Car.
 
+</h2>
 
+<p className="mt-8 max-w-xl text-lg leading-8 text-white/85">
 
-                <p className="subtext mb-8 leading-relaxed">
+For less than the cost of a single
 
-                  Before accepting delivery from the
+dealership accessory, ensure your vehicle
 
-                  showroom in {cityPricing.name},
+is free from hidden defects, repaint work
 
-                  let our experts inspect your vehicle
+and manufacturing issues before delivery
 
-                  for transport damage, repaint work,
+in {cityPricing.name}.
 
-                  electronic issues and manufacturing
+</p>
 
-                  defects.
+<div className="mt-10 flex flex-col gap-3">
 
-                </p>
+{[
 
+"400 Inspection Points",
 
+"Accident Detection",
 
-                <div className="grid grid-cols-2 gap-4">
+"Engine & Gearbox Check",
 
+"OBD Diagnostics",
 
+"Negotiation Report",
 
-                  {[
+"Independent Experts",
 
-                    "400 Checkpoints",
+].map((item) => (
 
-                    "Paint Thickness Test",
+<div
 
-                    "OBD Diagnostics",
+key={item}
 
-                    "Electrical Scan",
+className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/10 px-4 py-3 backdrop-blur-xl"
 
-                    "Battery Health",
+>
 
-                    "Digital Report",
+<span className="text-lg text-indigo-400">
 
-                  ].map((item) => (
+✓
 
-                    <div
+</span>
 
-                      key={item}
+<span className="text-sm font-medium">
 
-                      className="flex items-center gap-3"
+{item}
 
-                    >
+</span>
 
+</div>
 
+))}
 
-                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-sm font-black text-indigo-600">
+</div>
 
-                        ✓
+</div>
 
-                      </div>
+{/* RIGHT */}
 
+<div className="bg-white p-5 sm:p-8 lg:p-16">
 
+<div className="w-full rounded-[2rem] border border-slate-200 bg-slate-50 p-5 sm:p-8 lg:p-10">
 
-                      <span className="text-sm font-semibold">
+<p className="text-sm font-black uppercase tracking-[0.3em] text-indigo-600">
 
-                        {item}
+New Car PDI Pricing
 
-                      </span>
+</p>
 
+<p className="mt-2 text-sm font-semibold text-slate-500">
 
+{cityPricing.name}
 
-                    </div>
+</p>
 
-                  ))}
+{/* =================================================
 
+MAIN PRICE
 
+Pune:
 
-                </div>
+With Gauge is the main/default price.
 
+Other cities:
 
+Advanced OBD is the main/default price.
 
-                <div className="mt-10 flex items-center justify-between">
+================================================= */}
 
+{/* =================================================
 
+PRICE OPTIONS
 
-                  <span className="font-black text-indigo-600 transition group-hover:translate-x-2">
+================================================= */}
 
-                    Explore Service →
+<div className="mt-8 grid gap-3">
 
-                  </span>
+{/* =================================================
 
+WITHOUT GAUGE — PUNE ONLY
 
+================================================= */}
 
-                  <div className="rounded-2xl bg-indigo-600 px-5 py-3 font-black text-white shadow-lg">
+{cityName === "Pune" && (
 
-                    NEW CARS
+<div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4">
 
-                  </div>
+<div>
 
+<p className="font-bold text-slate-800">
 
+Without Gauge
 
-                </div>
+</p>
 
+<p className="text-xs text-slate-500">
 
+₹200 less
 
-              </div>
+</p>
 
+</div>
 
+<span className="text-xl font-black text-slate-900">
 
-            </Link>
+₹
 
+{formatPrice(
 
+withoutGaugePrice
 
-            {/* =================================================
+)}
 
-                USED CAR
+</span>
 
-            ================================================= */}
+</div>
 
+)}
 
+{/* =================================================
 
-            <Link
+WITH GAUGE — PUNE ONLY
 
-              href={`/${getCitySlug(cityName)}?type=used`}
+================================================= */}
 
-              onClick={(event) => {
+{cityName === "Pune" && (
 
-                event.preventDefault();
+<div className="flex items-center justify-between rounded-2xl border border-indigo-200 bg-indigo-50 p-4">
 
-                handleUsedCarBooking("Standard");
+<div>
 
-              }}
+<p className="font-bold text-indigo-800">
 
-              className="group relative overflow-hidden rounded-[2.5rem] bg-slate-900 p-10 text-white transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl"
+With Gauge
 
-            >
+</p>
 
+<p className="text-xs text-indigo-600">
 
+Standard PDI
 
-              <div className="absolute inset-0 bg-gradient-to-br from-slate-800 via-slate-900 to-black opacity-0 transition duration-500 group-hover:opacity-100" />
+</p>
 
+</div>
 
+<span className="text-xl font-black text-indigo-700">
 
-              <div className="relative">
+₹
 
+{formatPrice(
 
+standardFuelPrice
 
-                <div className="flex items-start justify-between">
+)}
 
+</span>
 
+</div>
 
-                  <div>
+)}
 
+{/* =================================================
 
+OBD
 
-                    <div className="mb-8 flex h-20 w-20 items-center justify-center rounded-3xl bg-white/10 text-5xl transition group-hover:-rotate-6">
+Pune:
 
-                      🚙
+With OBD
 
-                    </div>
+Other cities:
 
+With Advanced OBD
 
+================================================= */}
 
-                    <span className="inline-block rounded-full bg-orange-500/20 px-4 py-2 text-xs font-black uppercase tracking-widest text-orange-300">
+{cityName === "Pune" ? (
 
-                      Used Car PPI
+<div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4">
 
-                    </span>
+<div>
 
+<p className="font-bold text-slate-800">
 
+With OBD
 
-                  </div>
+</p>
 
+<p className="text-xs text-slate-500">
 
+Advanced Diagnostics
 
-                  <span className="rounded-full bg-emerald-500/20 px-4 py-2 text-xs font-black uppercase tracking-widest text-emerald-300">
+</p>
 
-                    From ₹
+</div>
 
-                    {formatPrice(usedCarPrice)}
+<span className="text-xl font-black text-slate-900">
 
-                  </span>
+₹
 
+{formatPrice(
 
+withObdPrice
 
-                </div>
+)}
 
+</span>
 
+</div>
 
-                <h3 className="!text-white mt-8 mb-4 text-4xl">
+) : (
 
-                  Pre-Purchase Inspection
+<>
 
-                </h3>
+<div className="flex items-center justify-between rounded-2xl border border-indigo-200 bg-indigo-50 p-4">
 
+<div>
 
+<p className="font-bold text-indigo-800">Standard Cars w/o OBD</p>
 
-                <p className="mb-8 leading-relaxed text-slate-300">
+<p className="text-xs text-indigo-600">Gauge Check • Standard PDI</p>
 
-                  Avoid buying a problematic vehicle
+</div>
 
-                  in {cityPricing.name}. We inspect
+<span className="text-xl font-black text-indigo-700">₹{formatPrice(standardFuelPrice)}</span>
 
-                  accident history, engine condition,
+</div>
 
-                  suspension, electronics and hidden
+<div className="flex items-center justify-between rounded-2xl border-2 border-indigo-200 bg-indigo-50 p-4">
 
-                  defects before you pay.
+<div>
 
-                </p>
+<p className="font-bold text-indigo-800">Standard Cars with OBD</p>
 
+<p className="text-xs text-indigo-600">Advanced OBD Diagnostics</p>
 
+</div>
 
-                <div className="grid grid-cols-2 gap-4">
+<span className="text-xl font-black text-indigo-700">₹{formatPrice(withObdPrice)}</span>
 
+</div>
 
+</>
 
-                  {[
+)}
 
-                    "Engine Health",
+{/* =================================================
 
-                    "Accident Detection",
+EV
 
-                    "Flood Damage",
+================================================= */}
 
-                    "OBD Scan",
+<div className="flex items-center justify-between rounded-2xl border border-indigo-200 bg-indigo-50 p-4">
 
-                    "Suspension Check",
+<div>
 
-                    "Road Test",
+<p className="font-bold text-indigo-800">
 
-                  ].map((item) => (
+EV • With Gauge
 
-                    <div
+</p>
 
-                      key={item}
+<p className="text-xs text-indigo-600">
 
-                      className="flex items-center gap-3"
+EV PDI
 
-                    >
+</p>
 
+</div>
 
+<span className="text-xl font-black text-indigo-700">
 
-                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-sm font-black text-indigo-300">
+₹
 
-                        ✓
+{formatPrice(
 
-                      </div>
+standardEvPrice
 
+)}
 
+</span>
 
-                      <span className="text-sm font-semibold text-slate-200">
+</div>
 
-                        {item}
-
-                      </span>
-
-
-
-                    </div>
-
-                  ))}
-
-
-
-                </div>
-
-
-
-                <div className="mt-10 flex items-center justify-between">
-
-
-
-                  <span className="font-black text-indigo-300 transition group-hover:translate-x-2">
-
-                    Explore Service →
-
-                  </span>
-
-
-
-                  <div className="rounded-2xl bg-white px-5 py-3 font-black text-slate-900 shadow-lg">
-
-                    USED CARS
-
-                  </div>
-
-
-
-                </div>
-
-
-
-              </div>
-
-
-
-            </Link>
-
-
-
-          </div>
-
-
-
-        </div>
-
-
-
-      </section>
-
-
-
-      {/* ======================================================
-
-          FINAL CTA
-
-      ====================================================== */}
-
-
-
-      <section className="px-6 pb-32">
-
-
-
-        <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 shadow-[0_40px_120px_rgba(99,102,241,0.35)] lg:rounded-[3rem]">
-
-
-
-          <div className="grid items-center lg:grid-cols-2">
-
-
-
-            {/* LEFT */}
-
-
-
-            <div className="p-12 text-white lg:p-16">
-
-
-
-              <span className="inline-flex rounded-full bg-white/15 px-5 py-2 text-xs font-black uppercase tracking-[0.3em] backdrop-blur-xl">
-
-                Book Your Inspection in{" "}
-
-                {cityPricing.name}
-
-              </span>
-
-
-
-              <h2 className="mt-8 text-5xl font-black leading-tight lg:text-6xl">
-
-                Don't Accept
-
-                <br />
-
-                A Defective
-
-                <br />
-
-                New Car.
-
-              </h2>
-
-
-
-              <p className="mt-8 max-w-xl text-lg leading-8 text-white/85">
-
-                For less than the cost of a single
-
-                dealership accessory, ensure your vehicle
-
-                is free from hidden defects, repaint work
-
-                and manufacturing issues before delivery
-
-                in {cityPricing.name}.
-
-              </p>
-
-
-
-              <div className="mt-10 flex flex-col gap-3">
-
-
-
-                {[
-
-                  "400 Inspection Points",
-
-                  "Accident Detection",
-
-                  "Engine & Gearbox Check",
-
-                  "OBD Diagnostics",
-
-                  "Negotiation Report",
-
-                  "Independent Experts",
-
-                ].map((item) => (
-
-                  <div
-
-                    key={item}
-
-                    className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/10 px-4 py-3 backdrop-blur-xl"
-
-                  >
-
-
-
-                    <span className="text-lg text-green-400">
-
-                      ✓
-
-                    </span>
-
-
-
-                    <span className="text-sm font-medium">
-
-                      {item}
-
-                    </span>
-
-
-
-                  </div>
-
-                ))}
-
-
-
-              </div>
-
-
-
-            </div>
-
-
-
-            {/* RIGHT */}
-
-
-
-            <div className="bg-white p-5 sm:p-8 lg:p-16">
-
-
-
-              <div className="w-full rounded-[2rem] border border-slate-200 bg-slate-50 p-5 sm:p-8 lg:p-10">
-
-
-
-                <p className="text-sm font-black uppercase tracking-[0.3em] text-indigo-600">
-
-                  New Car PDI Pricing
-
-                </p>
-
-
-
-                <p className="mt-2 text-sm font-semibold text-slate-500">
-
-                  {cityPricing.name}
-
-                </p>
-
-
-
-
-
-                {/* =================================================
-
-                    MAIN PRICE
-
-
-
-                    Pune:
-
-                    With Gauge is the main/default price.
-
-
-
-                    Other cities:
-
-                    Advanced OBD is the main/default price.
-
-                ================================================= */}
-
-
-
-                {/* =================================================
-
-                    PRICE OPTIONS
-
-                ================================================= */}
-
-
-
-                <div className="mt-8 grid gap-3">
-
-
-
-                  {/* =================================================
-
-                      WITHOUT GAUGE — PUNE ONLY
-
-                  ================================================= */}
-
-
-
-                  {cityName === "Pune" && (
-
-                    <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4">
-
-
-
-                      <div>
-
-
-
-                        <p className="font-bold text-slate-800">
-
-                          Without Gauge
-
-                        </p>
-
-
-
-                        <p className="text-xs text-slate-500">
-
-                          ₹200 less
-
-                        </p>
-
-
-
-                      </div>
-
-
-
-                      <span className="text-xl font-black text-slate-900">
-
-                        ₹
-
-                        {formatPrice(
-
-                          withoutGaugePrice
-
-                        )}
-
-                      </span>
-
-
-
-                    </div>
-
-                  )}
-
-
-
-                  {/* =================================================
-
-                      WITH GAUGE — PUNE ONLY
-
-                  ================================================= */}
-
-
-
-                  {cityName === "Pune" && (
-
-                    <div className="flex items-center justify-between rounded-2xl border border-indigo-200 bg-indigo-50 p-4">
-
-
-
-                      <div>
-
-
-
-                        <p className="font-bold text-indigo-800">
-
-                          With Gauge
-
-                        </p>
-
-
-
-                        <p className="text-xs text-indigo-600">
-
-                          Standard PDI
-
-                        </p>
-
-
-
-                      </div>
-
-
-
-                      <span className="text-xl font-black text-indigo-700">
-
-                        ₹
-
-                        {formatPrice(
-
-                          standardFuelPrice
-
-                        )}
-
-                      </span>
-
-
-
-                    </div>
-
-                  )}
-
-
-
-                  {/* =================================================
-
-                      OBD
-
-
-
-                      Pune:
-
-                      With OBD
-
-
-
-                      Other cities:
-
-                      With Advanced OBD
-
-                  ================================================= */}
-
-
-
-                  {cityName === "Pune" ? (
-
-                    <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4">
-
-
-
-                      <div>
-
-
-
-                        <p className="font-bold text-slate-800">
-
-                          With OBD
-
-                        </p>
-
-
-
-                        <p className="text-xs text-slate-500">
-
-                          Advanced Diagnostics
-
-                        </p>
-
-
-
-                      </div>
-
-
-
-                      <span className="text-xl font-black text-slate-900">
-
-                        ₹
-
-                        {formatPrice(
-
-                          withObdPrice
-
-                        )}
-
-                      </span>
-
-
-
-                    </div>
-
-                   ) : (
-                    <>
-                      <div className="flex items-center justify-between rounded-2xl border border-indigo-200 bg-indigo-50 p-4">
-                        <div>
-                          <p className="font-bold text-indigo-800">Standard Cars w/o OBD</p>
-                          <p className="text-xs text-indigo-600">Gauge Check • Standard PDI</p>
-                        </div>
-                        <span className="text-xl font-black text-indigo-700">₹{formatPrice(standardFuelPrice)}</span>
-                      </div>
-                      <div className="flex items-center justify-between rounded-2xl border-2 border-indigo-200 bg-indigo-50 p-4">
-                        <div>
-                          <p className="font-bold text-indigo-800">Standard Cars with OBD</p>
-                          <p className="text-xs text-indigo-600">Advanced OBD Diagnostics</p>
-                        </div>
-                        <span className="text-xl font-black text-indigo-700">₹{formatPrice(withObdPrice)}</span>
-                      </div>
-                    </>
-                  )}
-
-
-
-                  {/* =================================================
-
-                      EV
-
-                  ================================================= */}
-
-
-
-                  <div className="flex items-center justify-between rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
-
-
-
-                    <div>
-
-
-
-                      <p className="font-bold text-emerald-800">
-
-                        EV • With Gauge
-
-                      </p>
-
-
-
-                      <p className="text-xs text-emerald-600">
-
-                        EV PDI
-
-                      </p>
-
-
-
-                    </div>
-
-
-
-                    <span className="text-xl font-black text-emerald-700">
-
-                      ₹
-
-                      {formatPrice(
-
-                        standardEvPrice
-
-                      )}
-
-                    </span>
-
-
-
-                  </div>
-
-
-
-                </div>
-
-
+</div>
 
 <div className="mt-6 space-y-4">
-  {/* Your existing New Car pricing options stay here */}
+
+{/* Your existing New Car pricing options stay here */}
+
 </div>
 
 {/* =========================================================
-    USED / OLD CAR PRICING — DISTINCT SECTION
+
+USED / OLD CAR PRICING — DISTINCT SECTION
+
 ========================================================= */}
 
 <div className="mt-12 border-t-2 border-dashed border-slate-200 pt-10">
 
-  <div className="mb-5 flex items-center gap-3">
-    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-100">
-      <span className="text-xl">🔍</span>
-    </div>
+<div className="mb-5 flex items-center gap-3">
 
-    <div>
-      <p className="text-xs font-black uppercase tracking-[0.2em] text-amber-700">
-        Old / Used Car
-      </p>
+<div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-100">
 
-      <p className="text-sm font-black text-slate-900">
-        Pre-Purchase Inspection
-      </p>
-    </div>
-  </div>
+<span className="text-xl">🔍</span>
 
-  <div className="rounded-[1.5rem] border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-5 shadow-sm">
-    <div className="flex items-center justify-between gap-5">
+</div>
 
-      <div>
-        <p className="text-xs font-black uppercase tracking-wider text-amber-700">
-          Used Car PPI
-        </p>
+<div>
 
-        <p className="mt-1 text-xs font-medium leading-relaxed text-amber-800/70">
-          Independent pre-purchase inspection in{" "}
-          {cityPricing.name}
-        </p>
+<p className="text-xs font-black uppercase tracking-[0.2em] text-indigo-700">
 
-      </div>
+Old / Used Car
 
-      <div className="text-right">
-        <p className="text-[10px] font-black uppercase tracking-wider text-amber-600">
-          Starting From
-        </p>
+</p>
 
-        <p className="mt-1 text-3xl font-black text-amber-800">
-          ₹{formatPrice(usedCarPrice)}
-        </p>
-      </div>
+<p className="text-sm font-black text-slate-900">
 
-    </div>
-  </div>
+Pre-Purchase Inspection
+
+</p>
+
+</div>
+
+</div>
+
+<div className="rounded-[1.5rem] border-2 border-indigo-200 bg-gradient-to-br from-indigo-50 to-indigo-50 p-5 shadow-sm">
+
+<div className="flex items-center justify-between gap-5">
+
+<div>
+
+<p className="text-xs font-black uppercase tracking-wider text-indigo-700">
+
+Used Car PPI
+
+</p>
+
+<p className="mt-1 text-xs font-medium leading-relaxed text-indigo-800/70">
+
+Independent pre-purchase inspection in{" "}
+
+{cityPricing.name}
+
+</p>
+
+</div>
+
+<div className="text-right">
+
+<p className="text-[10px] font-black uppercase tracking-wider text-indigo-600">
+
+Starting From
+
+</p>
+
+<p className="mt-1 text-3xl font-black text-indigo-800">
+
+₹{formatPrice(usedCarPrice)}
+
+</p>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 
 {/* =========================================================
-    BENEFITS / NEXT SECTION
+
+BENEFITS / NEXT SECTION
+
 ========================================================= */}
 
 <div className="mt-10 space-y-4">
 
+{[
 
+"Certified PDI Engineer",
 
-                  {[
+"Independent Inspection",
 
-                    "Certified PDI Engineer",
+"At Your Dealership",
 
-                    "Independent Inspection",
+"Instant Digital Report",
 
-                    "At Your Dealership",
+].map((item) => (
 
-                    "Instant Digital Report",
+<div
 
-                  ].map((item) => (
+key={item}
 
-                    <div
+className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4"
 
-                      key={item}
+>
 
-                      className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4"
+<div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 font-bold text-indigo-600">
 
-                    >
+✓
 
+</div>
 
+<span className="font-semibold text-slate-700">
 
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 font-bold text-emerald-600">
+{item}
 
-                        ✓
+</span>
 
-                      </div>
+</div>
 
+))}
 
+</div>
 
-                      <span className="font-semibold text-slate-700">
+{/* =================================================
 
-                        {item}
+ACTIONS
 
-                      </span>
+================================================= */}
 
+<div className="mt-10 flex flex-col gap-4">
 
+<button
 
-                    </div>
+onClick={() => handleNewCarBooking("Standard")}
 
-                  ))}
+className="rounded-2xl bg-gradient-to-r from-indigo-600 to-indigo-600 px-8 py-5 text-lg font-bold text-white shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
 
+>
 
+Book Standard w/o OBD in {cityPricing.name} →
 
-                </div>
+</button>
 
+<button
 
+onClick={() => handleNewCarBooking("Standard-OBD")}
 
-                {/* =================================================
+className="rounded-2xl border-2 border-indigo-200 bg-indigo-50 px-8 py-5 text-lg font-bold text-indigo-700 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:bg-indigo-100 hover:shadow-xl"
 
-                    ACTIONS
+>
 
-                ================================================= */}
+Book Standard with OBD →
 
+</button>
 
+<Link
 
-                <div className="mt-10 flex flex-col gap-4">
+href="/info/pricing#new-car-pricing"
 
+className="rounded-2xl border border-slate-300 px-8 py-5 text-center font-bold text-slate-700 transition hover:bg-slate-100"
 
+>
 
-                  <button
-                    onClick={() => handleNewCarBooking("Standard")}
-                    className="rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 px-8 py-5 text-lg font-bold text-white shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
-                  >
-                    Book Standard w/o OBD in {cityPricing.name} →
-                  </button>
+View Pricing
 
-                  <button
-                    onClick={() => handleNewCarBooking("Standard-OBD")}
-                    className="rounded-2xl border-2 border-indigo-200 bg-indigo-50 px-8 py-5 text-lg font-bold text-indigo-700 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:bg-indigo-100 hover:shadow-xl"
-                  >
-                    Book Standard with OBD →
-                  </button>
+</Link>
 
+<a
 
+href="tel:+919975934213"
 
-                  <Link
+className="rounded-2xl border border-indigo-200 bg-indigo-50 px-8 py-5 text-center font-bold text-indigo-700 transition hover:bg-indigo-100"
 
-                    href="/info/pricing#new-car-pricing"
+>
 
-                    className="rounded-2xl border border-slate-300 px-8 py-5 text-center font-bold text-slate-700 transition hover:bg-slate-100"
+📞 Talk to an Expert
 
-                  >
+</a>
 
-                    View Pricing
+</div>
 
-                  </Link>
+</div>
 
+</div>
 
+</div>
 
-                  <a
+</div>
 
-                    href="tel:+919975934213"
+</section>
 
-                    className="rounded-2xl border border-indigo-200 bg-indigo-50 px-8 py-5 text-center font-bold text-indigo-700 transition hover:bg-indigo-100"
+</main>
 
-                  >
-
-                    📞 Talk to an Expert
-
-                  </a>
-
-
-
-                </div>
-
-
-
-              </div>
-
-
-
-            </div>
-
-
-
-          </div>
-
-
-
-        </div>
-
-
-
-      </section>
-
-
-
-    </main>
-
-  );
+);
 
 }

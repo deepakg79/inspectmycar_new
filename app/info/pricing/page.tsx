@@ -173,15 +173,18 @@ export default function Pricing() {
                     <p className="text-indigo-600 font-black uppercase tracking-[0.35em] text-xs mb-4">
                         Transparent Costs
                     </p>
-
                     <h1 className="heading text-5xl md:text-7xl mb-6">
-                        Choose Your{" "}
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-pink-500">
-                            PDI Tier
-                        </span>
-                        <br />
-                    </h1>
 
+                        Choose Your{" "}
+
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600">
+
+                            PDI Tier
+
+                        </span>
+
+                    </h1>
+  
                     <p className="subtext text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
                         <b>Professional,</b> <b>Unbiased</b> inspection with zero
                         dealership commissions. Choose the plan that

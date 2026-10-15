@@ -1,4 +1,5 @@
-"use client"; 
+"use client";
+
 import Link from "next/link";
 
 import { useBooking } from "@/app/context/BookingContext";
@@ -13,10 +14,12 @@ import {
 
     type CityName,
 
-} from "@/app/components/city_price"; 
+} from "@/app/components/city_price";
+
 export default function Home() {
 
-    const { openNewCarBooking } = useBooking(); 
+    const { openNewCarBooking } = useBooking();
+
     /**
 
      * ========================================================
@@ -39,7 +42,8 @@ export default function Home() {
 
      * City is also persisted in localStorage.
 
-     */ 
+     */
+
     const {
 
         selectedCity,
@@ -52,7 +56,8 @@ export default function Home() {
 
         newCarEvPrice,
 
-    } = useCityPricing(); 
+    } = useCityPricing();
+
     /**
 
      * ========================================================
@@ -61,7 +66,8 @@ export default function Home() {
 
      * ========================================================
 
-     */ 
+     */
+
     /**
 
      * Standard new-car PDI price.
@@ -74,7 +80,8 @@ export default function Home() {
 
     const standardFuelPrice =
 
-        newCarFuelPrice("withGauge"); 
+        newCarFuelPrice("withGauge");
+
     /**
 
      * EV standard PDI price.
@@ -83,7 +90,8 @@ export default function Home() {
 
     const standardEvPrice =
 
-        newCarEvPrice(); 
+        newCarEvPrice();
+
     /**
 
      * New-car pricing options.
@@ -92,26 +100,33 @@ export default function Home() {
 
     const withoutGaugePrice =
 
-        newCarFuelPrice("withoutGauge"); 
+        newCarFuelPrice("withoutGauge");
+
     const withObdPrice =
 
-        newCarFuelPrice("withOBD"); 
+        newCarFuelPrice("withOBD");
+
     const isPune =
 
-        selectedCity === "Pune"; 
+        selectedCity === "Pune";
+
     return (
 
-        <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-slate-50 via-white to-indigo-50/40 text-slate-900"> 
+        <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-slate-50 via-white to-[#EEF2FF]/40 text-slate-900">
+
             {/* =====================================================
 
                 BACKGROUND
 
-            \===================================================== */} 
-            <div className="absolute inset-0 -z-10 overflow-hidden"> 
-                <div className="absolute -top-40 -left-32 h-[34rem] w-[34rem] rounded-full bg-indigo-400/20 blur-[120px] animate-pulse" /> 
+            \===================================================== */}
+
+            <div className="absolute inset-0 -z-10 overflow-hidden">
+
+                <div className="absolute -top-40 -left-32 h-[34rem] w-[34rem] rounded-full bg-[#818CF8]/20 blur-[120px] animate-pulse" />
+
                 <div
 
-                    className="absolute top-1/3 -right-32 h-[30rem] w-[30rem] rounded-full bg-pink-400/20 blur-[120px] animate-pulse"
+                    className="absolute top-1/3 -right-32 h-[30rem] w-[30rem] rounded-full bg-[#818CF8]/20 blur-[120px] animate-pulse"
 
                     style={{
 
@@ -119,8 +134,10 @@ export default function Home() {
 
                     }}
 
-                /> 
-                <div className="absolute bottom-0 left-1/2 h-[25rem] w-[25rem] -translate-x-1/2 rounded-full bg-cyan-300/20 blur-[120px]" /> 
+                />
+
+                <div className="absolute bottom-0 left-1/2 h-[25rem] w-[25rem] -translate-x-1/2 rounded-full bg-[#C7D2FE]/30 blur-[120px]" />
+
                 <div
 
                     className="absolute inset-0 opacity-[0.03]"
@@ -137,21 +154,28 @@ export default function Home() {
 
                     }}
 
-                /> 
-            </div> 
+                />
+
+            </div>
+
             {/* =====================================================
 
                 CITY SELECTOR
 
-            \===================================================== */} 
-            <section className="relative max-w-7xl mx-auto px-6 pt-28"> 
-                <div className="flex justify-end"> 
-                    <div className="inline-flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/90 px-4 py-3 shadow-lg backdrop-blur-md"> 
+            \===================================================== */}
+
+            <section className="relative max-w-7xl mx-auto px-6 pt-28">
+
+                <div className="flex justify-end">
+
+                    <div className="inline-flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/90 px-4 py-3 shadow-lg backdrop-blur-md">
+
                         <span className="text-xs font-black uppercase tracking-wider text-slate-500">
 
                             📍 Select City
 
-                        </span> 
+                        </span>
+
                         <select
 
                             value={selectedCity}
@@ -166,7 +190,7 @@ export default function Home() {
 
                             }
 
-                            className="cursor-pointer bg-transparent text-sm font-black text-indigo-600 focus:outline-none"
+                            className="cursor-pointer bg-transparent text-sm font-black text-[#6366F1] focus:outline-none"
 
                         >
 
@@ -198,46 +222,70 @@ export default function Home() {
 
                             )}
 
-                        </select> 
-                    </div> 
-                </div> 
-            </section> 
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </section>
+
             {/* =====================================================
 
                 HERO
 
-            \===================================================== */} 
-            <section className="relative max-w-7xl mx-auto px-6 pt-16 pb-24"> 
-                <div className="grid lg:grid-cols-2 gap-20 items-center"> 
+            \===================================================== */}
+
+            <section className="relative max-w-7xl mx-auto px-6 pt-16 pb-24">
+
+                <div className="grid lg:grid-cols-2 gap-20 items-center">
+
                     {/* =================================================
 
                         LEFT
 
-                    \================================================= */} 
-                    <div> 
-                        <div className="inline-flex items-center gap-3 rounded-full border border-indigo-100 bg-white/70 backdrop-blur-xl px-5 py-2 shadow-lg"> 
-                            <span className="relative flex h-3 w-3"> 
-                                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" /> 
-                                <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-500" /> 
-                            </span> 
-                            <span className="text-xs font-black uppercase tracking-[0.25em] text-indigo-700">
+                    \================================================= */}
+
+                    <div>
+
+                        <div className="inline-flex items-center gap-3 rounded-full border border-[#E0E7FF] bg-white/70 backdrop-blur-xl px-5 py-2 shadow-lg">
+
+                            <span className="relative flex h-3 w-3">
+
+                                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#818CF8] opacity-75" />
+
+                                <span className="relative inline-flex h-3 w-3 rounded-full bg-[#6366F1]" />
+
+                            </span>
+
+                            <span className="text-xs font-black uppercase tracking-[0.25em] text-[#4F46E5]">
 
                                 {selectedCity} • Live Booking Open
 
-                            </span> 
-                        </div> 
-                        <h1 className="mt-10 text-5xl md:text-7xl font-black tracking-tight leading-[0.92]"> 
-                            Your New Car 
-                            <br /> 
-                            <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-500 bg-clip-text text-transparent">
+                            </span>
+
+                        </div>
+
+                        <h1 className="mt-10 text-5xl md:text-7xl font-black tracking-tight leading-[0.92]">
+
+                            Your New Car
+
+                            <br />
+
+                            <span className="bg-gradient-to-r from-[#3730A3] via-[#4F46E5] to-[#818CF8] bg-clip-text text-transparent">
 
                                 Deserves One
 
-                            </span> 
-                            <br /> 
-                            Final Inspection. 
-                        </h1> 
-                        <p className="mt-8 max-w-xl text-lg leading-8 text-slate-600"> 
+                            </span>
+
+                            <br />
+
+                            Final Inspection.
+
+                        </h1>
+
+                        <p className="mt-8 max-w-xl text-lg leading-8 text-slate-600">
+
                             Independent 400 point
 
                             Pre-Delivery Inspection
@@ -254,27 +302,34 @@ export default function Home() {
 
                             in{" "}
 
-                            {selectedCity}. 
-                        </p> 
+                            {selectedCity}.
+
+                        </p>
+
                         {/* =================================================
 
                             PRICE SUMMARY
 
-                        \================================================= */} 
+                        \================================================= */}
+
                         <div
 
                             className={`mt-8 grid grid-cols-1 ${isPune ? "sm:grid-cols-3" : "sm:grid-cols-2"} gap-3 max-w-2xl`}
 
-                        > 
-                            {/* WITHOUT GAUGE — PUNE ONLY */} 
+                        >
+
+                            {/* WITHOUT GAUGE — PUNE ONLY */}
+
                             {isPune && (
 
-                                <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-lg backdrop-blur-xl"> 
+                                <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-lg backdrop-blur-xl">
+
                                     <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
 
                                         Without Gauge
 
-                                    </p> 
+                                    </p>
+
                                     <p className="mt-2 text-2xl font-black text-slate-900">
 
                                         ₹
@@ -285,24 +340,31 @@ export default function Home() {
 
                                         )}
 
-                                    </p> 
+                                    </p>
+
                                     <p className="mt-1 text-xs text-slate-500">
 
                                         Basic PDI
 
-                                    </p> 
+                                    </p>
+
                                 </div>
 
-                            )} 
-                            {/* WITH GAUGE — ALL CITIES */} 
+                            )}
+
+                            {/* WITH GAUGE — ALL CITIES */}
+
                             {(
-                                <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-lg backdrop-blur-xl"> 
+
+                                <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-lg backdrop-blur-xl">
+
                                     <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
 
                                         With Gauge
 
-                                    </p> 
-                                    <p className="mt-2 text-2xl font-black text-indigo-700">
+                                    </p>
+
+                                    <p className="mt-2 text-2xl font-black text-[#4F46E5]">
 
                                         ₹
 
@@ -312,24 +374,30 @@ export default function Home() {
 
                                         )}
 
-                                    </p> 
-                                    <p className="mt-1 text-xs text-indigo-600">
+                                    </p>
+
+                                    <p className="mt-1 text-xs text-[#6366F1]">
 
                                         Standard PDI
 
-                                    </p> 
+                                    </p>
+
                                 </div>
 
-                            )} 
-                            {/* WITH OBD — ALL CITIES */} 
+                            )}
+
+                            {/* WITH OBD — ALL CITIES */}
+
                             {isPune ? (
 
-                                <div className="rounded-2xl border-2 border-indigo-200 bg-indigo-50/80 p-4 shadow-lg"> 
-                                    <p className="text-[10px] font-black uppercase tracking-[0.18em] text-indigo-500">
+                                <div className="rounded-2xl border-2 border-[#C7D2FE] bg-[#EEF2FF]/80 p-4 shadow-lg">
+
+                                    <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#6366F1]">
 
                                         With OBD Dignostics
 
-                                    </p> 
+                                    </p>
+
                                     <p className="mt-2 text-2xl font-black text-slate-900">
 
                                         ₹
@@ -340,22 +408,27 @@ export default function Home() {
 
                                         )}
 
-                                    </p> 
+                                    </p>
+
                                     <p className="mt-1 text-xs text-slate-500">
 
 Recommended PDI
-                                    </p> 
+
+                                    </p>
+
                                 </div>
 
                             ) : (
 
-                                <div className="rounded-2xl border-2 border-indigo-200 bg-indigo-50/80 p-5 shadow-lg"> 
-                                    <p className="text-[10px] font-black uppercase tracking-[0.18em] text-indigo-500">
+                                <div className="rounded-2xl border-2 border-[#C7D2FE] bg-[#EEF2FF]/80 p-5 shadow-lg">
+
+                                    <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#6366F1]">
 
                                         With OBD Dignostics
 
-                                    </p> 
-                                    <p className="mt-2 text-3xl font-black text-indigo-700">
+                                    </p>
+
+                                    <p className="mt-2 text-3xl font-black text-[#4F46E5]">
 
                                         ₹
 
@@ -365,30 +438,39 @@ Recommended PDI
 
                                         )}
 
-                                    </p> 
-                                    <p className="mt-1 text-xs font-semibold text-indigo-600">
+                                    </p>
+
+                                    <p className="mt-1 text-xs font-semibold text-[#6366F1]">
 
                                         Recommended PDI
 
-                                    </p> 
+                                    </p>
+
                                 </div>
 
-                            )} 
-                        </div> 
-                        {/* EV PRICE */} 
-                        <div className="mt-3 inline-flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/80 px-5 py-3 shadow-sm"> 
+                            )}
+
+                        </div>
+
+                        {/* EV PRICE */}
+
+                        <div className="mt-3 inline-flex items-center gap-3 rounded-2xl border border-[#C7D2FE] bg-[#EEF2FF]/80 px-5 py-3 shadow-sm">
+
                             <span className="text-lg">
 
                                 ⚡
 
-                            </span> 
-                            <div> 
-                                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-emerald-600">
+                            </span>
+
+                            <div>
+
+                                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#6366F1]">
 
                                     EV Inspection
 
-                                </p> 
-                                <p className="text-lg font-black text-emerald-700">
+                                </p>
+
+                                <p className="text-lg font-black text-[#4F46E5]">
 
                                     ₹
 
@@ -398,10 +480,14 @@ Recommended PDI
 
                                     )}
 
-                                </p> 
-                            </div> 
-                        </div> 
-                        <div className="mt-10 flex flex-col sm:flex-row gap-5"> 
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <div className="mt-10 flex flex-col sm:flex-row gap-5">
+
                             <button
 
                                 onClick={() =>
@@ -410,34 +496,40 @@ Recommended PDI
 
                                 }
 
-                                className="group rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 px-8 py-5 font-bold text-white shadow-2xl shadow-indigo-300/40 transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03]"
+                                className="group rounded-2xl bg-gradient-to-r from-[#3730A3] to-[#6366F1] px-8 py-5 font-bold text-white shadow-2xl shadow-[#6366F1]/30 transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03]"
 
                             >
 
                                 Book PDI in{" "}
 
-                                {selectedCity} 
+                                {selectedCity}
+
                                 <span className="ml-2 inline-block transition group-hover:translate-x-1">
 
                                     →
 
                                 </span>
 
-                            </button> 
+                            </button>
+
                             <a
 
                                 href="tel:+919975934213"
 
-                                className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-xl px-8 py-5 font-bold text-slate-800 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-indigo-300 hover:shadow-xl"
+                                className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-xl px-8 py-5 font-bold text-slate-800 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-[#818CF8] hover:shadow-xl"
 
                             >
 
                                 📞 Talk to an Expert
 
-                            </a> 
-                        </div> 
-                        {/* QUICK STATS */} 
-                        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3"> 
+                            </a>
+
+                        </div>
+
+                        {/* QUICK STATS */}
+
+                        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3">
+
                             {[
 
                                 ["400", "Checks"],
@@ -458,32 +550,42 @@ Recommended PDI
 
                                         className="rounded-2xl border border-white/60 bg-white/70 p-5 backdrop-blur-xl shadow-lg transition hover:-translate-y-2 hover:shadow-2xl"
 
-                                    > 
-                                        <div className="text-2xl font-black text-indigo-600">
+                                    >
+
+                                        <div className="text-2xl font-black text-[#6366F1]">
 
                                             {v}
 
-                                        </div> 
+                                        </div>
+
                                         <div className="mt-1 text-xs uppercase tracking-[0.2em] text-slate-500">
 
                                             {l}
 
-                                        </div> 
+                                        </div>
+
                                     </div>
 
                                 )
 
-                            )} 
-                        </div> 
-                    </div> 
+                            )}
+
+                        </div>
+
+                    </div>
+
                     {/* =================================================
 
                         RIGHT
 
-                    \================================================= */} 
-                    <div className="relative"> 
-                        <div className="absolute -inset-8 rounded-[3rem] bg-gradient-to-r from-indigo-500/20 to-pink-500/20 blur-3xl" /> 
-                        <div className="relative overflow-hidden rounded-[3rem] border border-white/70 bg-white p-4 shadow-[0_30px_80px_rgba(0,0,0,0.15)]"> 
+                    \================================================= */}
+
+                    <div className="relative">
+
+                        <div className="absolute -inset-8 rounded-[3rem] bg-gradient-to-r from-[#6366F1]/20 to-[#818CF8]/20 blur-3xl" />
+
+                        <div className="relative overflow-hidden rounded-[3rem] border border-white/70 bg-white p-4 shadow-[0_30px_80px_rgba(0,0,0,0.15)]">
+
                             <img
 
                                 src="/hero-car.jpg"
@@ -492,20 +594,26 @@ Recommended PDI
 
                                 className="h-[320px] sm:h-[450px] lg:h-[650px] w-full rounded-[2rem] lg:rounded-[2.3rem] object-contain lg:object-cover bg-slate-100 transition duration-700 lg:hover:scale-105"
 
-                            /> 
-                            <div className="relative mt-4 lg:absolute lg:bottom-10 lg:left-10 lg:right-10 rounded-2xl lg:rounded-[2rem] border border-white/50 bg-white/90 p-4 sm:p-5 lg:p-6 backdrop-blur-xl shadow-xl"> 
-                                <div className="flex items-center justify-between"> 
-                                    <div> 
-                                        <p className="text-xs font-black uppercase tracking-[0.25em] text-indigo-600">
+                            />
+
+                            <div className="relative mt-4 lg:absolute lg:bottom-10 lg:left-10 lg:right-10 rounded-2xl lg:rounded-[2rem] border border-white/50 bg-white/90 p-4 sm:p-5 lg:p-6 backdrop-blur-xl shadow-xl">
+
+                                <div className="flex items-center justify-between">
+
+                                    <div>
+
+                                        <p className="text-xs font-black uppercase tracking-[0.25em] text-[#6366F1]">
 
                                             Before Delivery
 
-                                        </p> 
+                                        </p>
+
                                         <h3 className="mt-2 text-2xl font-black text-slate-900">
 
                                             Independent Vehicle Health Report
 
-                                        </h3> 
+                                        </h3>
+
                                         <p className="mt-2 text-sm text-slate-600">
 
                                             Identify transport damage,
@@ -522,28 +630,42 @@ Recommended PDI
 
                                             {selectedCity}.
 
-                                        </p> 
-                                    </div> 
-                                    <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-indigo-600 to-pink-500 text-4xl text-white shadow-xl">
+                                        </p>
+
+                                    </div>
+
+                                    <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-[#3730A3] to-[#818CF8] text-4xl text-white shadow-xl">
 
                                         ⚡
 
-                                    </div> 
-                                </div> 
-                            </div> 
-                        </div> 
-                    </div> 
-                </div> 
-            </section> 
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
             {/* =====================================================
 
                 TRUST STATS
 
-            \===================================================== */} 
-            <section className="px-6 pb-24"> 
-                <div className="max-w-7xl mx-auto"> 
-                    <div className="rounded-[3rem] border border-white bg-white/80 backdrop-blur-xl p-10 shadow-2xl"> 
-                        <div className="grid gap-8 md:grid-cols-4"> 
+            \===================================================== */}
+
+            <section className="px-6 pb-24">
+
+                <div className="max-w-7xl mx-auto">
+
+                    <div className="rounded-[3rem] border border-white bg-white/80 backdrop-blur-xl p-10 shadow-2xl">
+
+                        <div className="grid gap-8 md:grid-cols-4">
+
                             {[
 
                                 {
@@ -594,51 +716,66 @@ Recommended PDI
 
                                         key={item.label}
 
-                                        className="group rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-pink-300 hover:shadow-2xl"
+                                        className="group rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-[#818CF8] hover:shadow-2xl"
 
-                                    > 
-                                        <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-500 via-violet-600 to-indigo-600 text-3xl shadow-lg transition-all duration-300 group-hover:scale-110">
+                                    >
+
+                                        <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#818CF8] via-[#4F46E5] to-[#6366F1] text-3xl shadow-lg transition-all duration-300 group-hover:scale-110">
 
                                             {item.icon}
 
-                                        </div> 
+                                        </div>
+
                                         <div className="text-4xl font-black text-slate-900">
 
                                             {item.value}
 
-                                        </div> 
+                                        </div>
+
                                         <p className="mt-2 text-xs font-bold uppercase tracking-[0.25em] text-slate-500">
 
                                             {item.label}
 
-                                        </p> 
+                                        </p>
+
                                     </div>
 
                                 )
 
-                            )} 
-                        </div> 
-                    </div> 
-                </div> 
-            </section> 
+                            )}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
             {/* =====================================================
 
                 WHY CHOOSE
 
-            \===================================================== */} 
-            <section className="px-6 pb-28"> 
-                <div className="max-w-7xl mx-auto"> 
-                    <div className="text-center"> 
-                        <span className="rounded-full bg-indigo-100 px-5 py-2 text-xs font-black uppercase tracking-[0.3em] text-indigo-600">
+            \===================================================== */}
+
+            <section className="px-6 pb-28">
+
+                <div className="max-w-7xl mx-auto">
+
+                    <div className="text-center">
+
+                        <span className="rounded-full bg-[#E0E7FF] px-5 py-2 text-xs font-black uppercase tracking-[0.3em] text-[#6366F1]">
 
                             Why InspectMyCar
 
-                        </span> 
+                        </span>
+
                         <h2 className="mt-8 text-5xl font-black tracking-tight text-slate-900">
 
                             More Than Just a Checklist
 
-                        </h2> 
+                        </h2>
+
                         <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-slate-600">
 
                             Every inspection combines professional expertise,
@@ -651,9 +788,12 @@ Recommended PDI
 
                             {selectedCity}.
 
-                        </p> 
-                    </div> 
-                    <div className="mt-20 grid gap-8 lg:grid-cols-3"> 
+                        </p>
+
+                    </div>
+
+                    <div className="mt-20 grid gap-8 lg:grid-cols-3">
+
                         {[
 
                             {
@@ -732,51 +872,68 @@ Recommended PDI
 
                                     }}
 
-                                > 
-                                    <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-gradient-to-br from-indigo-500/10 to-pink-500/10 blur-3xl transition group-hover:scale-150" /> 
-                                    <div className="relative"> 
-                                        <div className="mb-7 flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-indigo-600 to-pink-500 text-3xl text-white shadow-xl transition group-hover:rotate-6 group-hover:scale-110">
+                                >
+
+                                    <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-gradient-to-br from-[#6366F1]/10 to-[#818CF8]/10 blur-3xl transition group-hover:scale-150" />
+
+                                    <div className="relative">
+
+                                        <div className="mb-7 flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-[#3730A3] to-[#818CF8] text-3xl text-white shadow-xl transition group-hover:rotate-6 group-hover:scale-110">
 
                                             {card.icon}
 
-                                        </div> 
+                                        </div>
+
                                         <h3 className="text-2xl font-black text-slate-900">
 
                                             {card.title}
 
-                                        </h3> 
+                                        </h3>
+
                                         <p className="mt-5 leading-8 text-slate-600">
 
                                             {card.desc}
 
-                                        </p> 
-                                    </div> 
+                                        </p>
+
+                                    </div>
+
                                 </div>
 
                             )
 
-                        )} 
-                    </div> 
-                </div> 
-            </section> 
+                        )}
+
+                    </div>
+
+                </div>
+
+            </section>
+
             {/* =====================================================
 
                 WHY PDI MATTERS
 
-            \===================================================== */} 
-            <section className="px-6 py-28 bg-slate-50"> 
-                <div className="max-w-7xl mx-auto"> 
-                    <div className="text-center"> 
-                        <span className="inline-flex rounded-full bg-indigo-100 px-5 py-2 text-xs font-black uppercase tracking-[0.3em] text-indigo-600">
+            \===================================================== */}
+
+            <section className="px-6 py-28 bg-slate-50">
+
+                <div className="max-w-7xl mx-auto">
+
+                    <div className="text-center">
+
+                        <span className="inline-flex rounded-full bg-[#E0E7FF] px-5 py-2 text-xs font-black uppercase tracking-[0.3em] text-[#6366F1]">
 
                             Before Delivery
 
-                        </span> 
+                        </span>
+
                         <h2 className="mt-8 text-5xl md:text-6xl font-black tracking-tight text-slate-900">
 
                             Why You Should Never Skip PDI
 
-                        </h2> 
+                        </h2>
+
                         <p className="mt-6 max-w-3xl mx-auto text-xl leading-9 text-slate-600">
 
                             Even a brand-new car can have transport damage,
@@ -789,9 +946,12 @@ Recommended PDI
 
                             {selectedCity}.
 
-                        </p> 
-                    </div> 
-                    <div className="mt-20 grid gap-8 md:grid-cols-2 xl:grid-cols-3"> 
+                        </p>
+
+                    </div>
+
+                    <div className="mt-20 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+
                         {[
 
                             {
@@ -862,56 +1022,72 @@ Recommended PDI
 
                                     key={item.title}
 
-                                    className="group rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-indigo-300 hover:shadow-2xl"
+                                    className="group rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-[#818CF8] hover:shadow-2xl"
 
-                                > 
-                                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 text-3xl text-white shadow-lg transition group-hover:scale-110">
+                                >
+
+                                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#3730A3] to-[#6366F1] text-3xl text-white shadow-lg transition group-hover:scale-110">
 
                                         {item.icon}
 
-                                    </div> 
+                                    </div>
+
                                     <h3 className="mt-8 text-2xl font-black text-slate-900">
 
                                         {item.title}
 
-                                    </h3> 
+                                    </h3>
+
                                     <p className="mt-5 leading-8 text-slate-600">
 
                                         {item.desc}
 
-                                    </p> 
+                                    </p>
+
                                 </div>
 
                             )
 
-                        )} 
-                    </div> 
+                        )}
+
+                    </div>
+
                     {/* =================================================
 
                         TIMELINE
 
-                    \================================================= */} 
-                    <div className="mt-32"> 
-                        <div className="text-center"> 
-                            <span className="inline-flex rounded-full bg-pink-100 px-5 py-2 text-xs font-black uppercase tracking-[0.3em] text-pink-600">
+                    \================================================= */}
+
+                    <div className="mt-32">
+
+                        <div className="text-center">
+
+                            <span className="inline-flex rounded-full bg-[#E0E7FF] px-5 py-2 text-xs font-black uppercase tracking-[0.3em] text-[#4F46E5]">
 
                                 Our Process
 
-                            </span> 
+                            </span>
+
                             <h2 className="mt-8 text-5xl font-black text-slate-900">
 
                                 How Your Inspection Works
 
-                            </h2> 
+                            </h2>
+
                             <p className="mt-5 text-lg text-slate-600">
 
                                 Four simple steps from booking to delivery.
 
-                            </p> 
-                        </div> 
-                        <div className="relative mt-20"> 
-                            <div className="absolute left-8 top-0 hidden h-full w-px bg-slate-300 lg:block" /> 
-                            <div className="space-y-10"> 
+                            </p>
+
+                        </div>
+
+                        <div className="relative mt-20">
+
+                            <div className="absolute left-8 top-0 hidden h-full w-px bg-slate-300 lg:block" />
+
+                            <div className="space-y-10">
+
                                 {[
 
                                     {
@@ -964,47 +1140,64 @@ Recommended PDI
 
                                             className="relative flex items-start gap-8"
 
-                                        > 
-                                            <div className="z-10 flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 text-xl font-black text-white shadow-lg">
+                                        >
+
+                                            <div className="z-10 flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#3730A3] to-[#6366F1] text-xl font-black text-white shadow-lg">
 
                                                 {item.step}
 
-                                            </div> 
-                                            <div className="flex-1 rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"> 
+                                            </div>
+
+                                            <div className="flex-1 rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+
                                                 <h3 className="text-2xl font-black text-slate-900">
 
                                                     {item.title}
 
-                                                </h3> 
+                                                </h3>
+
                                                 <p className="mt-4 leading-8 text-slate-600">
 
                                                     {item.desc}
 
-                                                </p> 
-                                            </div> 
+                                                </p>
+
+                                            </div>
+
                                         </div>
 
                                     )
 
-                                )} 
-                            </div> 
-                        </div> 
-                    </div> 
-                </div> 
-            </section> 
+                                )}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
             {/* =====================================================
 
                 TESTIMONIALS
 
-            \===================================================== */} 
-            <section className="px-6 py-28"> 
-                <div className="max-w-7xl mx-auto"> 
-                    <div className="text-center"> 
-                        <span className="inline-flex rounded-full bg-indigo-100 px-5 py-2 text-xs font-black uppercase tracking-[0.3em] text-indigo-600">
+            \===================================================== */}
+
+            <section className="px-6 py-28">
+
+                <div className="max-w-7xl mx-auto">
+
+                    <div className="text-center">
+
+                        <span className="inline-flex rounded-full bg-[#E0E7FF] px-5 py-2 text-xs font-black uppercase tracking-[0.3em] text-[#6366F1]">
 
                             Customer Stories
 
-                        </span> 
+                        </span>
+
                         <h2 className="mt-8 text-5xl font-black tracking-tight text-slate-900">
 
                             Thousands of Buyers
@@ -1013,7 +1206,8 @@ Recommended PDI
 
                             Trust InspectMyCar
 
-                        </h2> 
+                        </h2>
+
                         <p className="mt-6 max-w-3xl mx-auto text-xl leading-9 text-slate-600">
 
                             Our independent inspections have helped customers identify
@@ -1022,9 +1216,12 @@ Recommended PDI
 
                             accepting delivery.
 
-                        </p> 
-                    </div> 
-                    <div className="mt-20 grid gap-8 lg:grid-cols-3"> 
+                        </p>
+
+                    </div>
+
+                    <div className="mt-20 grid gap-8 lg:grid-cols-3">
+
                         {[
 
                             {
@@ -1067,77 +1264,102 @@ Recommended PDI
 
                                     className="group rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
 
-                                > 
-                                    <div className="flex items-center gap-1 text-yellow-400 text-xl">
+                                >
+
+                                    <div className="flex items-center gap-1 text-amber-400 text-xl">
 
                                         ★★★★★
 
-                                    </div> 
+                                    </div>
+
                                     <p className="mt-6 text-lg leading-8 text-slate-600 italic">
 
                                         "{review.text}"
 
-                                    </p> 
-                                    <div className="mt-8 flex items-center gap-4 border-t border-slate-100 pt-6"> 
-                                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 text-lg font-black text-white">
+                                    </p>
+
+                                    <div className="mt-8 flex items-center gap-4 border-t border-slate-100 pt-6">
+
+                                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#3730A3] to-[#6366F1] text-lg font-black text-white">
 
                                             {review.name.charAt(0)}
 
-                                        </div> 
-                                        <div> 
+                                        </div>
+
+                                        <div>
+
                                             <h4 className="font-black text-slate-900">
 
                                                 {review.name}
 
-                                            </h4> 
-                                            <p className="text-sm font-semibold text-indigo-600">
+                                            </h4>
+
+                                            <p className="text-sm font-semibold text-[#6366F1]">
 
                                                 {review.car}
 
-                                            </p> 
-                                        </div> 
-                                    </div> 
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
                                 </div>
 
                             )
 
-                        )} 
-                    </div> 
-                </div> 
-            </section> 
+                        )}
+
+                    </div>
+
+                </div>
+
+            </section>
+
             {/* =====================================================
 
                 FAQ
 
-            \===================================================== */} 
-            <section className="px-6 pb-28"> 
-                <div className="max-w-6xl mx-auto rounded-[3rem] border border-slate-200 bg-white p-12 shadow-xl"> 
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8"> 
-                        <div> 
-                            <span className="inline-flex rounded-full bg-pink-100 px-5 py-2 text-xs font-black uppercase tracking-[0.3em] text-pink-600">
+            \===================================================== */}
+
+            <section className="px-6 pb-28">
+
+                <div className="max-w-6xl mx-auto rounded-[3rem] border border-slate-200 bg-white p-12 shadow-xl">
+
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+
+                        <div>
+
+                            <span className="inline-flex rounded-full bg-[#E0E7FF] px-5 py-2 text-xs font-black uppercase tracking-[0.3em] text-[#4F46E5]">
 
                                 Frequently Asked Questions
 
-                            </span> 
+                            </span>
+
                             <h2 className="mt-6 text-5xl font-black text-slate-900">
 
                                 Everything You Need to Know
 
-                            </h2> 
-                        </div> 
+                            </h2>
+
+                        </div>
+
                         <Link
 
                             href="/faqs"
 
-                            className="rounded-2xl bg-slate-900 px-8 py-4 font-bold text-white transition hover:bg-indigo-600"
+                            className="rounded-2xl bg-slate-900 px-8 py-4 font-bold text-white transition hover:bg-[#3730A3]"
 
                         >
 
                             View All FAQs →
 
-                        </Link> 
-                    </div> 
-                    <div className="mt-14 grid gap-6"> 
+                        </Link>
+
+                    </div>
+
+                    <div className="mt-14 grid gap-6">
+
                         {[
 
                             {
@@ -1180,55 +1402,76 @@ Recommended PDI
 
                                     key={faq.q}
 
-                                    className="rounded-[1.75rem] border border-slate-200 bg-slate-50 p-8 transition-all duration-300 hover:border-indigo-300 hover:bg-white hover:shadow-lg"
+                                    className="rounded-[1.75rem] border border-slate-200 bg-slate-50 p-8 transition-all duration-300 hover:border-[#818CF8] hover:bg-white hover:shadow-lg"
 
-                                > 
+                                >
+
                                     <h3 className="text-2xl font-black text-slate-900">
 
                                         {faq.q}
 
-                                    </h3> 
+                                    </h3>
+
                                     <p className="mt-4 leading-8 text-slate-600">
 
                                         {faq.a}
 
-                                    </p> 
+                                    </p>
+
                                 </div>
 
                             )
 
-                        )} 
-                    </div> 
-                </div> 
-            </section> 
+                        )}
+
+                    </div>
+
+                </div>
+
+            </section>
+
             {/* =====================================================
 
                 FINAL CTA
 
-            \===================================================== */} 
-            <section className="px-6 pb-32"> 
-                <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] lg:rounded-[3rem] bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 shadow-[0_40px_120px_rgba(99,102,241,0.35)]"> 
-                    <div className="grid lg:grid-cols-2 items-center"> 
+            \===================================================== */}
+
+            <section className="px-6 pb-32">
+
+                <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] lg:rounded-[3rem] bg-gradient-to-br from-[#3730A3] via-[#4F46E5] to-[#818CF8] shadow-[0_40px_120px_rgba(99,102,241,0.35)]">
+
+                    <div className="grid lg:grid-cols-2 items-center">
+
                         {/* =================================================
 
                             LEFT
 
-                        \================================================= */} 
-                        <div className="p-12 lg:p-16 text-white"> 
+                        \================================================= */}
+
+                        <div className="p-12 lg:p-16 text-white">
+
                             <span className="inline-flex rounded-full bg-white/15 px-5 py-2 text-xs font-black uppercase tracking-[0.3em] backdrop-blur-xl">
 
                                 Book Your Inspection in{" "}
 
                                 {selectedCity}
 
-                            </span> 
-                            <h2 className="mt-8 text-5xl lg:text-6xl font-black leading-tight"> 
-                                Don't Accept 
-                                <br /> 
-                                A Defective 
-                                <br /> 
-                                New Car. 
-                            </h2> 
+                            </span>
+
+                            <h2 className="mt-8 text-5xl lg:text-6xl font-black leading-tight">
+
+                                Don't Accept
+
+                                <br />
+
+                                A Defective
+
+                                <br />
+
+                                New Car.
+
+                            </h2>
+
                             <p className="mt-8 text-lg leading-8 text-white/85 max-w-xl">
 
                                 For less than the cost of a single dealership accessory,
@@ -1239,8 +1482,10 @@ Recommended PDI
 
                                 {selectedCity}.
 
-                            </p> 
-                            <div className="mt-10 flex flex-col gap-3"> 
+                            </p>
+
+                            <div className="mt-10 flex flex-col gap-3">
+
                                 {[
 
                                     "400 Inspection Points",
@@ -1265,45 +1510,58 @@ Recommended PDI
 
                                             className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/10 px-4 py-3 backdrop-blur-xl"
 
-                                        > 
-                                            <span className="text-green-400 text-lg">
+                                        >
+
+                                            <span className="text-[#C7D2FE] text-lg">
 
                                                 ✓
 
-                                            </span> 
+                                            </span>
+
                                             <span className="text-sm font-medium">
 
                                                 {item}
 
-                                            </span> 
+                                            </span>
+
                                         </div>
 
                                     )
 
-                                )} 
-                            </div> 
-                        </div> 
+                                )}
+
+                            </div>
+
+                        </div>
+
                         {/* =================================================
 
                             RIGHT - DYNAMIC PRICING CARD
 
-                        \================================================= */} 
-                        <div className="bg-white p-5 sm:p-8 lg:p-16"> 
-                            <div className="w-full rounded-[2rem] border border-slate-200 bg-slate-50 p-5 sm:p-8 lg:p-10"> 
-                                <p className="text-sm font-black uppercase tracking-[0.3em] text-indigo-600">
+                        \================================================= */}
+
+                        <div className="bg-white p-5 sm:p-8 lg:p-16">
+
+                            <div className="w-full rounded-[2rem] border border-slate-200 bg-slate-50 p-5 sm:p-8 lg:p-10">
+
+                                <p className="text-sm font-black uppercase tracking-[0.3em] text-[#6366F1]">
 
                                     Car PDI Pricing
 
-                                </p> 
+                                </p>
+
                                 <p className="mt-2 text-sm font-semibold text-slate-500">
 
                                     {selectedCity}
 
-                                </p> 
-                                {/* MAIN PRICE */} 
+                                </p>
 
-                                    <div className="mt-4"> 
-                                        <div className="flex items-end gap-2"> 
+                                {/* MAIN PRICE */}
+
+                                    <div className="mt-4">
+
+                                        <div className="flex items-end gap-2">
+
                                             <span className="text-6xl font-black text-slate-900">
 
                                                 ₹
@@ -1314,38 +1572,50 @@ Recommended PDI
 
                                                 )}
 
-                                            </span> 
+                                            </span>
+
                                             <span className="pb-3 text-slate-500">
 
                                                 with gauge
 
-                                            </span> 
-                                        </div> 
+                                            </span>
+
+                                        </div>
+
                                         <p className="mt-2 text-sm text-slate-500">
 
                                             Standard new-car PDI
 
-                                        </p> 
+                                        </p>
+
                                     </div>
 
-                                {/* PRICE OPTIONS */} 
-                                <div className="mt-8 grid gap-3"> 
-                                    {/* PUNE ONLY — WITHOUT GAUGE */} 
+                                {/* PRICE OPTIONS */}
+
+                                <div className="mt-8 grid gap-3">
+
+                                    {/* PUNE ONLY — WITHOUT GAUGE */}
+
                                     {isPune && (
 
-                                        <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4"> 
-                                            <div> 
+                                        <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4">
+
+                                            <div>
+
                                                 <p className="font-bold text-slate-800">
 
                                                     Without Gauge
 
-                                                </p> 
+                                                </p>
+
                                                 <p className="text-xs text-slate-500">
 
                                                     ₹200 less
 
-                                                </p> 
-                                            </div> 
+                                                </p>
+
+                                            </div>
+
                                             <span className="text-xl font-black text-slate-900">
 
                                                 ₹
@@ -1356,26 +1626,34 @@ Recommended PDI
 
                                                 )}
 
-                                            </span> 
+                                            </span>
+
                                         </div>
 
-                                    )} 
-                                    {/* WITH GAUGE — ALL CITIES */} 
+                                    )}
+
+                                    {/* WITH GAUGE — ALL CITIES */}
+
                                     {(
 
-                                        <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4"> 
-                                            <div> 
+                                        <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4">
+
+                                            <div>
+
                                                 <p className="font-bold text-slate-800">
 
                                                     With Gauge
 
-                                                </p> 
+                                                </p>
+
                                                  <p className="text-xs text-slate-500">
 
                                                     Standard PDI
 
-                                                </p> 
-                                            </div> 
+                                                </p>
+
+                                            </div>
+
                                              <span className="text-xl font-black text-slate-900">
 
                                                 ₹
@@ -1386,33 +1664,41 @@ Recommended PDI
 
                                                 )}
 
-                                            </span> 
+                                            </span>
+
                                         </div>
 
-                                    )} 
-                                    {/* WITH OBD — ALL CITIES */} 
+                                    )}
+
+                                    {/* WITH OBD — ALL CITIES */}
+
                                     {isPune ? (
 
-                                        <div className="flex items-center justify-between rounded-2xl border-2 border-indigo-200 bg-indigo-50 p-4"> 
-                                            <div> 
-                                                <p className="font-bold text-indigo-800">
+                                        <div className="flex items-center justify-between rounded-2xl border-2 border-[#C7D2FE] bg-[#EEF2FF] p-4">
+
+                                            <div>
+
+                                                <p className="font-bold text-[#3730A3]">
 
                                                     With OBD
 
-                                                </p> 
-                                                <p className="text-xs text-indigo-600">
+                                                </p>
+
+                                                <p className="text-xs text-[#6366F1]">
 
                                                     Advanced Diagnostics
 
-                                                </p> 
-                                                <p className="text-xs text-indigo-600">
+                                                </p>
+
+                                                <p className="text-xs text-[#6366F1]">
 
                                                     Recommended PDI
 
-                                                </p> 
-                                            </div> 
-                                            <span className="text-xl font-black text-indigo-700">
-                                          
+                                                </p>
+
+                                            </div>
+
+                                            <span className="text-xl font-black text-[#4F46E5]">
 
                                                 ₹
 
@@ -1422,31 +1708,37 @@ Recommended PDI
 
                                                 )}
 
-                                            </span> 
+                                            </span>
+
                                         </div>
 
                                     ) : (
 
-                                        <div className="flex items-center justify-between rounded-2xl border-2 border-indigo-200 bg-indigo-50 p-4"> 
-                                            <div> 
-                                                <p className="font-bold text-indigo-800">
+                                        <div className="flex items-center justify-between rounded-2xl border-2 border-[#C7D2FE] bg-[#EEF2FF] p-4">
+
+                                            <div>
+
+                                                <p className="font-bold text-[#3730A3]">
 
                                                     With OBD
 
-                                                </p> 
-                                                <p className="text-xs text-indigo-600">
+                                                </p>
+
+                                                <p className="text-xs text-[#6366F1]">
 
                                                     Advanced Diagnostics
 
-                                                </p> 
-                                                <p className="text-xs text-indigo-600">
+                                                </p>
+
+                                                <p className="text-xs text-[#6366F1]">
 
                                                     Recommended PDI
 
-                                                </p> 
-                                            </div> 
-                                            <span className="text-xl font-black text-indigo-700">
-                                          
+                                                </p>
+
+                                            </div>
+
+                                            <span className="text-xl font-black text-[#4F46E5]">
 
                                                 ₹
 
@@ -1456,25 +1748,33 @@ Recommended PDI
 
                                                 )}
 
-                                            </span> 
+                                            </span>
+
                                         </div>
 
-                                    )} 
-                                    {/* EV — ALL CITIES */} 
-                                    <div className="flex items-center justify-between rounded-2xl border border-emerald-200 bg-emerald-50 p-4"> 
-                                        <div> 
-                                            <p className="font-bold text-emerald-800">
+                                    )}
+
+                                    {/* EV — ALL CITIES */}
+
+                                    <div className="flex items-center justify-between rounded-2xl border border-[#C7D2FE] bg-[#EEF2FF] p-4">
+
+                                        <div>
+
+                                            <p className="font-bold text-[#3730A3]">
 
                                                 EV Inspection
 
-                                            </p> 
-                                            <p className="text-xs text-emerald-600">
+                                            </p>
+
+                                            <p className="text-xs text-[#6366F1]">
 
                                                 Complete EV PDI
 
-                                            </p> 
-                                        </div> 
-                                        <span className="text-xl font-black text-emerald-700">
+                                            </p>
+
+                                        </div>
+
+                                        <span className="text-xl font-black text-[#4F46E5]">
 
                                             ₹
 
@@ -1484,11 +1784,16 @@ Recommended PDI
 
                                             )}
 
-                                        </span> 
-                                    </div> 
-                                </div> 
-                                {/* BENEFITS */} 
-                                <div className="mt-10 space-y-4"> 
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                                {/* BENEFITS */}
+
+                                <div className="mt-10 space-y-4">
+
                                     {[
 
                                         "Certified PDI Engineer",
@@ -1509,25 +1814,32 @@ Recommended PDI
 
                                                 className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4"
 
-                                            > 
-                                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 font-bold">
+                                            >
+
+                                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#E0E7FF] text-[#6366F1] font-bold">
 
                                                     ✓
 
-                                                </div> 
+                                                </div>
+
                                                 <span className="font-semibold text-slate-700">
 
                                                     {item}
 
-                                                </span> 
+                                                </span>
+
                                             </div>
 
                                         )
 
-                                    )} 
-                                </div> 
-                                {/* ACTIONS */} 
-                                <div className="mt-10 flex flex-col gap-4"> 
+                                    )}
+
+                                </div>
+
+                                {/* ACTIONS */}
+
+                                <div className="mt-10 flex flex-col gap-4">
+
                                     <button
 
                                         onClick={() =>
@@ -1540,7 +1852,7 @@ Recommended PDI
 
                                         }
 
-                                        className="rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 px-8 py-5 text-lg font-bold text-white shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+                                        className="rounded-2xl bg-gradient-to-r from-[#3730A3] to-[#6366F1] px-8 py-5 text-lg font-bold text-white shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
 
                                     >
 
@@ -1548,7 +1860,8 @@ Recommended PDI
 
                                         {selectedCity} →
 
-                                    </button> 
+                                    </button>
+
                                     <Link
 
                                         href="/info/pricing#new-car-pricing"
@@ -1559,24 +1872,32 @@ Recommended PDI
 
                                         View Pricing
 
-                                    </Link> 
+                                    </Link>
+
                                     <a
 
                                         href="tel:+919975934213"
 
-                                        className="rounded-2xl border border-indigo-200 bg-indigo-50 px-8 py-5 text-center font-bold text-indigo-700 transition hover:bg-indigo-100"
+                                        className="rounded-2xl border border-[#C7D2FE] bg-[#EEF2FF] px-8 py-5 text-center font-bold text-[#4F46E5] transition hover:bg-[#E0E7FF]"
 
                                     >
 
                                         📞 Talk to an Expert
 
-                                    </a> 
-                                </div> 
-                            </div> 
-                        </div> 
-                    </div> 
-                </div> 
-            </section> 
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
         </main>
 
     );

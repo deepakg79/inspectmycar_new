@@ -15,7 +15,7 @@ const { openBookingChooser } = useBooking();
 
                                     <button
                             onClick={openBookingChooser}
-                            className="btn-primary px-10 py-5 text-lg shadow-xl"
+                                className="group rounded-2xl bg-gradient-to-r from-indigo-800 via-indigo-600 to-indigo-500 px-8 py-5 font-bold text-white shadow-2xl shadow-indigo-300/40 transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03]"
                         >
                              Book {brand} PDI
                         </button>
