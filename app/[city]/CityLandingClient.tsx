@@ -973,7 +973,7 @@ export default function CityLandingClient({
 
 
 
-        <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 shadow-[0_40px_120px_rgba(99,102,241,0.35)] lg:rounded-[3rem]">
+        <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-indigo-950 via-indigo-700 to-slate-950 shadow-[0_40px_120px_rgba(30,27,75,0.35)] lg:rounded-[3rem]">
 
 
 

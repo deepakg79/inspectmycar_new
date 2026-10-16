@@ -333,109 +333,7 @@ export default function InspectionForm() {
     };
 
 
-    // ========================================================
-    // VIN DECODER
-    // ========================================================
 
-    useEffect(() => {
-
-        const vin =
-            meta.vin
-                .trim()
-                .toUpperCase();
-
-
-        if (vin.length >= 11) {
-
-            const yearChar =
-                vin[9];
-
-            const monthChar =
-                vin[10];
-
-
-            const YEAR_CODE: Record<
-                string,
-                number
-            > = {
-
-                T: 2026,
-                S: 2025,
-                R: 2024,
-                P: 2023,
-                N: 2022,
-                M: 2021,
-                L: 2020,
-                K: 2019,
-                J: 2018,
-                H: 2017,
-                G: 2016,
-                F: 2015,
-            };
-
-
-            const MONTH_CODE: Record<
-                string,
-                string
-            > = {
-
-                A: "January",
-                "1": "January",
-
-                B: "February",
-                "2": "February",
-
-                C: "March",
-                "3": "March",
-
-                D: "April",
-                "4": "April",
-
-                E: "May",
-                "5": "May",
-
-                F: "June",
-                "6": "June",
-
-                G: "July",
-                "7": "July",
-
-                H: "August",
-                "8": "August",
-
-                J: "September",
-                "9": "September",
-
-                K: "October",
-
-                L: "November",
-
-                M: "December",
-            };
-
-
-            setMeta(prev => ({
-
-                ...prev,
-
-                year:
-                    YEAR_CODE[
-                        yearChar
-                    ]
-                        ? YEAR_CODE[
-                            yearChar
-                        ].toString()
-                        : prev.year,
-
-                month:
-                    MONTH_CODE[
-                    monthChar
-                    ] ||
-                    prev.month,
-            }));
-        }
-
-    }, [meta.vin]);
 
 
     // ========================================================
@@ -1574,40 +1472,30 @@ export default function InspectionForm() {
 
                                 <input
                                     required
+                                    type="number"
+                                    inputMode="numeric"
+                                    min="0"
+                                    step="1"
                                     placeholder="Odo"
                                     className="
                                         p-4
                                         bg-slate-50
                                         rounded-2xl
                                     "
-                                    value={
-                                        meta.odometer
-                                    }
+                                    value={meta.odometer}
                                     onChange={e =>
                                         setMeta({
                                             ...meta,
-                                            odometer:
-                                                e.target
-                                                    .value,
+                                            odometer: e.target.value,
                                         })
                                     }
                                 />
-
-
-                                <p
-                                    className="
-                                        text-[10px]
-                                        text-slate-400
-                                        font-black
-                                        ml-2
-                                    "
-                                >
-                                    Auto-filled from VIN
-                                    (editable)
-                                </p>
-
-
                                 <input
+                                    type="number"
+                                    inputMode="numeric"
+                                    min="1900"
+                                    max={new Date().getFullYear() + 1}
+                                    step="1"
                                     placeholder="Year"
                                     className="
                                         p-4
@@ -1616,15 +1504,11 @@ export default function InspectionForm() {
                                         text-center
                                         font-bold
                                     "
-                                    value={
-                                        meta.year
-                                    }
+                                    value={meta.year}
                                     onChange={e =>
                                         setMeta({
                                             ...meta,
-                                            year:
-                                                e.target
-                                                    .value,
+                                            year: e.target.value,
                                         })
                                     }
                                 />
