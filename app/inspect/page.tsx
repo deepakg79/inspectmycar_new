@@ -212,6 +212,35 @@ export default function InspectionForm() {
             >
         >({});
 
+    // Fuel and transmission are independent selections.
+    // Petrol/Diesel/CNG alone means manual; adding Automatic
+    // marks that fuel variant as automatic too.
+    const [selectedVehicleTypes, setSelectedVehicleTypes] =
+        useState<string[]>([]);
+
+    const handleVehicleTypeToggle = (type: string) => {
+        if (["Petrol", "Diesel", "CNG", "EV"].includes(type)) {
+            setMeta(prev => ({ ...prev, vehicleType: type }));
+            setSelectedVehicleTypes(prev =>
+                prev.includes("Automatic") ? [type, "Automatic"] : [type]
+            );
+            return;
+        }
+
+        if (type === "Automatic") {
+            setSelectedVehicleTypes(prev => {
+                const next = prev.includes("Automatic")
+                    ? prev.filter(value => value !== "Automatic")
+                    : [...prev, "Automatic"];
+                setMeta(current => ({
+                    ...current,
+                    vehicleType: next.find(value => ["Petrol", "Diesel", "CNG", "EV"].includes(value)) || (next.includes("Automatic") ? "Automatic" : ""),
+                }));
+                return next;
+            });
+        }
+    };
+
 
     // ========================================================
     // LOAD ACTIVE JOB
@@ -415,48 +444,33 @@ export default function InspectionForm() {
 
     const filteredChecklist =
         useMemo(() => {
-
-            if (
-                !searchQuery.trim()
-            ) {
-
-                return checklist;
-            }
-
+            const query = searchQuery.trim().toLowerCase();
 
             return checklist
+                .map(section => {
+                    // Keep each checkpoint's original position. The index
+                    // must not change when search hides earlier checkpoints.
+                    const indexedItems = section.items.map((item, originalIndex) => ({
+                        item,
+                        originalIndex,
+                    }));
 
-                .map(section => ({
+                    const visibleItems = query
+                        ? indexedItems.filter(({ item }) => {
+                            const text =
+                                typeof item === "object" ? item.text : item;
+                            return text.toLowerCase().includes(query);
+                        })
+                        : indexedItems;
 
-                    ...section,
-
-                    items:
-                        section.items.filter(
-                            item =>
-                                (
-                                    typeof item ===
-                                        "object"
-                                        ? item.text
-                                        : item
-                                )
-                                    .toLowerCase()
-                                    .includes(
-                                        searchQuery
-                                            .toLowerCase()
-                                    )
-                        ),
-                }))
-
-                .filter(
-                    section =>
-                        section.items
-                            .length > 0
-                );
-
-        }, [
-            searchQuery,
-        ]);
-
+                    return {
+                        ...section,
+                        items: visibleItems.map(({ item }) => item),
+                        originalIndices: visibleItems.map(({ originalIndex }) => originalIndex),
+                    };
+                })
+                .filter(section => section.items.length > 0);
+        }, [searchQuery]);
 
     // ========================================================
     // STATUS CHANGE
@@ -723,7 +737,7 @@ export default function InspectionForm() {
 
 
             if (
-                !meta.vehicleType
+                selectedVehicleTypes.length === 0
             ) {
 
                 alert(
@@ -915,8 +929,8 @@ export default function InspectionForm() {
                         Array.isArray(
                             checklistItem.notFor
                         ) &&
-                        checklistItem.notFor.includes(
-                            meta.vehicleType
+                        selectedVehicleTypes.some(type =>
+                            checklistItem.notFor!.includes(type)
                         );
 
 
@@ -1095,6 +1109,7 @@ export default function InspectionForm() {
                     {
 
                         ...meta,
+                        vehicleTypes: selectedVehicleTypes,
 
                         bookingId:
                             meta.bookingId,
@@ -1717,8 +1732,9 @@ export default function InspectionForm() {
                                     text-slate-400
                                 "
                             >
-                                Vehicle Type
+                                Vehicle Type / Transmission
                             </p>
+                            <p className="text-xs text-slate-500">Choose Petrol, Diesel, CNG or EV for manual transmission. Then select Automatic as well for an automatic variant.</p>
 
 
                             <div
@@ -1743,13 +1759,7 @@ export default function InspectionForm() {
                                                 type
                                             }
                                             type="button"
-                                            onClick={() =>
-                                                setMeta({
-                                                    ...meta,
-                                                    vehicleType:
-                                                        type,
-                                                })
-                                            }
+                                            onClick={() => handleVehicleTypeToggle(type)}
                                             className={`
                                                 flex-1
                                                 min-w-[80px]
@@ -1760,8 +1770,7 @@ export default function InspectionForm() {
                                                 font-black
                                                 border
                                                 transition-all
-                                                ${meta.vehicleType ===
-                                                    type
+                                                ${selectedVehicleTypes.includes(type)
                                                     ? "bg-indigo-600 text-white border-indigo-600 shadow-md"
                                                     : "bg-slate-50 text-slate-500 border-slate-200"
                                                 }
@@ -1971,7 +1980,7 @@ export default function InspectionForm() {
                                                 ? item.label
                                                 : String(
                                                     section.startNo +
-                                                    iIdx
+                                                    (section.originalIndices?.[iIdx] ?? iIdx)
                                                 );
 
 
@@ -2015,9 +2024,8 @@ export default function InspectionForm() {
                                             Array.isArray(
                                                 item.notFor
                                             ) &&
-                                            !!meta.vehicleType &&
-                                            item.notFor.includes(
-                                                meta.vehicleType
+                                            selectedVehicleTypes.some(type =>
+                                                item.notFor!.includes(type)
                                             );
 
 

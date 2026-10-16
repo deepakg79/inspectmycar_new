@@ -128,6 +128,31 @@ export const buildPDF = async ({
             new Date().getMonth() + 1
         ).padStart(2, "0")}-${new Date().getFullYear()}`
         : "-";
+    // Build the report's vehicle description from the selected fuel and
+    // transmission. Newer inspection forms save combined selections in
+    // vehicleTypes; older reports may only have vehicleType.
+    const rawVehicleTypes = meta.vehicleTypes ?? report.vehicleTypes;
+    const selectedVehicleTypes: string[] = Array.isArray(rawVehicleTypes)
+        ? rawVehicleTypes.map((value: unknown) => String(value).trim()).filter(Boolean)
+        : typeof rawVehicleTypes === "string"
+            ? rawVehicleTypes.split(/[,+]/).map((value: string) => value.trim()).filter(Boolean)
+            : [];
+
+    const legacyVehicleType = String(meta.vehicleType ?? report.vehicleType ?? "").trim();
+    const allVehicleSelections = [...selectedVehicleTypes, ...legacyVehicleType.split(/[,+]/).map((value: string) => value.trim()).filter(Boolean)];
+    const normalizedSelections = allVehicleSelections.map((value) => value.toLowerCase());
+    const fuelType = ["petrol", "diesel", "cng"].find((fuel) => normalizedSelections.includes(fuel));
+    const isAutomatic = normalizedSelections.some((value) => value === "automatic" || value.includes("automatic transmission"))
+        || /\bautomatic\b/i.test(legacyVehicleType);
+    const vehicleVariant = fuelType
+        ? `${fuelType.charAt(0).toUpperCase()}${fuelType.slice(1)}${isAutomatic ? " (Automatic)" : ""}`
+        : legacyVehicleType;
+    const vehicleName = [meta.brand || "", meta.model || ""]
+        .map((value: string) => String(value).trim())
+        .filter(Boolean)
+        .join(" ");
+    const vehicleModelDisplay = `${vehicleName || "-"}${vehicleVariant ? ` - ${vehicleVariant}` : meta.variant ? ` ${meta.variant}` : ""}`;
+
     // Checklist results
     const results = report.checklistResults || {};
 
@@ -235,14 +260,7 @@ export const buildPDF = async ({
             [
                 "Vehicle Model",
 
-                `${meta.brand || "-"} ${meta.model || "-"
-                } ${meta.variant
-                    ? meta.variant
-                    : ""
-                } ${meta.vehicleType
-                    ? `(${meta.vehicleType})`
-                    : ""
-                }`,
+                vehicleModelDisplay,
 
                 "Car Mfg",
 
@@ -729,6 +747,105 @@ return normalizedComment
     }
 
     // ============================================================
+    // INSPECTOR OBSERVATIONS
+    // ============================================================
+
+    const inspectorComments =
+        report.inspectorComments ||
+        report.meta?.inspectorComments ||
+        [];
+
+    // Convert pasted checkpoint comments into a consistent, readable form.
+    // Examples:
+    //   "Fuel Tank: Check for leaks - 97" -> "97 Fuel Tank: Check for leaks"
+    //   "Transmission Gaskets & Seals: Check for leaks - 111 Transmission Gaskets & Seals: Check for leaks"
+    //      -> "111 Transmission Gaskets & Seals: Check for leaks"
+    // Exact checkpoint names without a number are matched to the original checklist.
+    const checkpointLookup: Array<{ id: string; text: string }> = [];
+    checklist.forEach((section: any) => {
+        section.items.forEach((item: any, index: number) => {
+            const id = typeof item === "object" && item.label
+                ? String(item.label)
+                : String(section.startNo + index);
+            const text = String(typeof item === "object" ? item.text : item).trim();
+            if (text) checkpointLookup.push({ id, text });
+        });
+    });
+
+    const normalizeInspectorComment = (value: unknown): string => {
+        const raw = String(value ?? "").trim();
+        if (!raw) return "";
+
+        // Keep the serial number and checkpoint name together, even if the
+        // pasted comment contains a newline immediately after the number.
+        if (/^\d{1,4}(?:\s|[.)-])/.test(raw)) {
+            return raw.replace(/^(\d{1,4})\s+/, "$1\u00A0");
+        }
+
+        // Match the longest checkpoint text first, so similar names don't collide.
+        const matches = checkpointLookup
+            .filter(({ text }) => raw.toLowerCase().startsWith(text.toLowerCase()))
+            .sort((a, b) => b.text.length - a.text.length);
+
+        if (!matches.length) return raw;
+
+        const checkpoint = matches[0];
+        const remainder = raw.slice(checkpoint.text.length).trim();
+        const numberMatch = remainder.match(/^-\s*(\d{1,4})(?:\s+(.*))?$/);
+
+        if (numberMatch) {
+            const serial = numberMatch[1];
+            const trailingText = (numberMatch[2] || "").trim();
+            // If the pasted text repeats the checkpoint after its number, drop the duplicate.
+            const duplicateCheckpoint = trailingText.toLowerCase() === checkpoint.text.toLowerCase();
+            const extra = trailingText && !duplicateCheckpoint ? ` - ${trailingText}` : "";
+            return `${serial}\u00A0${checkpoint.text}${extra}`;
+        }
+
+        const id = checkpoint.id;
+        return `${id}\u00A0${checkpoint.text}${remainder ? ` ${remainder}` : ""}`;
+    };
+
+    if (
+        inspectorComments.length > 0
+    ) {
+
+        autoTable(doc, {
+
+            startY:
+                issues.length > 0 && (doc as any).lastAutoTable
+                    ? (doc as any).lastAutoTable.finalY + 10
+                    : 200,
+
+            head: [
+                ["Inspector Recommendations"],
+            ],
+
+            body:
+                inspectorComments
+                    .map((comment: string) => normalizeInspectorComment(comment))
+                    .filter(Boolean)
+                    .map((comment: string) => [comment]),
+
+            headStyles: {
+                fillColor: [2, 27, 58],
+                textColor: 255,
+                fontStyle: "bold",
+            },
+
+            styles: {
+                fontSize: 10,
+                cellPadding: 4,
+                valign: "middle",
+            },
+
+            didDrawPage: () => {
+                drawWatermark(doc);
+            },
+        });
+    }
+
+    // ============================================================
     // ADMIN AI EXECUTIVE SUMMARY
     // ============================================================
     // Included only for the Admin "Preview AI Report" flow.
@@ -1205,60 +1322,7 @@ return normalizedComment
     }
 
 
-    // ============================================================
-    // INSPECTOR OBSERVATIONS
-    // ============================================================
 
-    const inspectorComments =
-        report.inspectorComments ||
-        report.meta?.inspectorComments ||
-        [];
-
-
-    if (
-        inspectorComments.length > 0
-    ) {
-
-        autoTable(doc, {
-
-            startY:
-                aiSummaryEndY !== null
-                    ? aiSummaryEndY
-                    : issues.length > 0
-                        ? (doc as any).lastAutoTable.finalY + 10
-                        : 200,
-
-            head: [
-                ["AI Generated Summary and Recommendations"],
-            ],
-
-            body:
-                inspectorComments.map(
-                    (
-                        comment: string,
-                        index: number
-                    ) => [
-                            `${index + 1}. ${comment}`,
-                        ]
-                ),
-
-            headStyles: {
-                fillColor: [2, 27, 58],
-                textColor: 255,
-                fontStyle: "bold",
-            },
-
-            styles: {
-                fontSize: 10,
-                cellPadding: 4,
-                valign: "middle",
-            },
-
-            didDrawPage: () => {
-                drawWatermark(doc);
-            },
-        });
-    }
 
 
     drawWatermark(doc);

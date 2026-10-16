@@ -24,5 +24,8 @@ experimental: {
     // no redirects by default
     return [];
   },
+    outputFileTracingIncludes: {
+    "/api/protect-pdf": ["./vendor/qpdf/**/*"],
+  },
 };
 export default nextConfig;
