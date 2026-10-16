@@ -70,7 +70,8 @@ function extractEditableComment(value: unknown): string {
 
 
 // Apply server-side PDF permission restrictions after every PDF has been merged.
-// Requires the /api/protect-pdf route and qpdf on the server.
+// Preview, Preview AI Report, Merge, and Share all pass their final merged PDF
+// through this same endpoint, which invokes qpdf on the server.
 async function protectPdfBytes(bytes: ArrayBuffer | Uint8Array): Promise<Uint8Array> {
     // Blob accepts a definite ArrayBuffer and avoids TS DOM BodyInit errors
     // caused by Uint8Array<ArrayBufferLike> in newer TypeScript versions.
@@ -82,8 +83,19 @@ async function protectPdfBytes(bytes: ArrayBuffer | Uint8Array): Promise<Uint8Ar
     });
 
     if (!response.ok) {
-        const message = await response.text().catch(() => "");
-        throw new Error(message || `PDF protection failed (${response.status}).`);
+        const responseText = await response.text().catch(() => "");
+        let message = `PDF protection failed (${response.status}).`;
+
+        if (responseText) {
+            try {
+                const payload = JSON.parse(responseText) as { error?: string };
+                message = payload.error || message;
+            } catch {
+                message = responseText.slice(0, 500) || message;
+            }
+        }
+
+        throw new Error(message);
     }
 
     return new Uint8Array(await response.arrayBuffer());
@@ -295,8 +307,13 @@ export default function ApprovePDIsPage() {
 
             setTimeout(() => URL.revokeObjectURL(url), 60000);
         } catch (error) {
-            console.error("Failed to generate AI Report:", error);
-            alert("Failed to generate AI Report. Please try again.");
+            // Surface the actual stage/error so failures can be diagnosed.
+            // The protection endpoint intentionally returns safe messages only.
+            const message = error instanceof Error
+                ? error.message
+                : "Unknown error";
+            console.error("Failed to generate AI Report:", message);
+            alert(`Failed to generate AI Report. ${message}`);
         }
     };
 
