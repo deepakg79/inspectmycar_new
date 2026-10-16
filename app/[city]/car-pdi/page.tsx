@@ -350,7 +350,6 @@ export default async function CarPDIPage({
                             "Most inspections take approximately one to two hours depending on the vehicle and inspection type.",
                     },
                 },
-
                 {
                     "@type": "Question",
                     name:
