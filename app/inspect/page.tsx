@@ -2527,39 +2527,6 @@ export default function InspectionForm() {
 
 
             {/* ==================================================
-                GO TO BOTTOM
-            ================================================== */}
-
-            <button
-                type="button"
-                aria-label="Go to bottom"
-                title="Go to bottom"
-                onClick={() => {
-                    window.scrollTo({
-                        top: document.documentElement.scrollHeight,
-                        behavior: "smooth",
-                    });
-                }}
-                className="fixed bottom-24 right-5 z-[998] flex h-12 w-12 items-center justify-center rounded-full bg-indigo-600 text-white shadow-xl ring-4 ring-white/80 transition-all hover:bg-indigo-700 active:scale-90"
-            >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="23"
-                    height="23"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                >
-                    <path d="M12 5v14" />
-                    <path d="m19 12-7 7-7-7" />
-                </svg>
-            </button>
-
-            {/* ==================================================
                 TOAST
             ================================================== */}
 
