@@ -342,7 +342,13 @@ export default function InspectionForm() {
 
     const filteredChecklist =
         useMemo(() => {
-            const query = searchQuery.trim().toLowerCase();
+            // Match every search word independently, regardless of order.
+            // Example: "fuel corrosion" matches "Fuel Tank: Check for corrosion".
+            const queryWords = searchQuery
+                .toLowerCase()
+                .trim()
+                .split(/\s+/)
+                .filter(Boolean);
 
             return checklist
                 .map(section => {
@@ -353,11 +359,18 @@ export default function InspectionForm() {
                         originalIndex,
                     }));
 
-                    const visibleItems = query
+                    const visibleItems = queryWords.length
                         ? indexedItems.filter(({ item }) => {
-                            const text =
-                                typeof item === "object" ? item.text : item;
-                            return text.toLowerCase().includes(query);
+                            const checkpointText =
+                                typeof item === "object" ? item.text : String(item);
+                            const searchableText = checkpointText
+                                .toLowerCase()
+                                .replace(/[^\p{L}\p{N}]+/gu, " ")
+                                .trim();
+
+                            return queryWords.every(word =>
+                                searchableText.includes(word.replace(/[^\p{L}\p{N}]+/gu, ""))
+                            );
                         })
                         : indexedItems;
 
@@ -378,6 +391,8 @@ export default function InspectionForm() {
         id: string,
         value: number
     ) => {
+        // Once a searched checkpoint is marked, return to the full checklist.
+        setSearchQuery("");
 
         setResults(prev => {
 
@@ -1223,30 +1238,35 @@ export default function InspectionForm() {
                 </div>
 
 
-                <input
-                    ref={
-                        searchInputRef
-                    }
-                    type="text"
-                    placeholder="Search Engine, AC, Tyre..."
-                    value={
-                        searchQuery
-                    }
-                    onChange={e =>
-                        setSearchQuery(
-                            e.target.value
-                        )
-                    }
-                    className="
-                        w-full
-                        p-4
-                        bg-white/10
-                        border
-                        border-white/20
-                        rounded-2xl
-                        text-sm
-                    "
-                />
+                <div className="relative">
+                    <input
+                        ref={searchInputRef}
+                        type="text"
+                        placeholder="Search words, e.g. Fuel corrosion or Dickey repainted..."
+                        value={searchQuery}
+                        onChange={e => setSearchQuery(e.target.value)}
+                        onKeyDown={e => {
+                            if (e.key === "Escape") {
+                                setSearchQuery("");
+                                searchInputRef.current?.blur();
+                            }
+                        }}
+                        className="w-full rounded-2xl border border-white/20 bg-white/10 p-4 pr-20 text-sm text-white placeholder:text-white/60"
+                    />
+                    {searchQuery && (
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setSearchQuery("");
+                                searchInputRef.current?.focus();
+                            }}
+                            aria-label="Clear checkpoint search"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-xl bg-white/15 px-3 py-2 text-xs font-bold text-white hover:bg-white/25"
+                        >
+                            Clear ×
+                        </button>
+                    )}
+                </div>
 
             </div>
 
