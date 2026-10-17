@@ -1,4 +1,3 @@
-// app/layout.tsx
 
 import "../app/globals.css";
 import { Inter } from "next/font/google";
@@ -7,6 +6,7 @@ import type { Metadata } from "next";
 import WhatsAppButton from "@/app/components/WhatsAppButton";
 import ConditionalNavbar from "@/app/components/ConditionalNavbar";
 import Footer from "@/app/components/Footer";
+import LocationDetector from "@/app/components/LocationDetector";
 import { BookingProvider } from "@/app/context/BookingContext";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: "InspectMyCar | Car Inspection Pune",
         description:
-            "Professional PDI & used car inspection in Pune with 400 checkpoints.",
+            "Professional PDI & car inspection Pune with 400 checkpoints.",
         images: ["/og-image.jpg"],
     },
 
@@ -89,6 +89,8 @@ export default function RootLayout({
         >
             <body className={`${inter.className} bg-main antialiased`}>
                 <BookingProvider>
+                    <LocationDetector />
+
                     <ConditionalNavbar />
 
                     {children}
