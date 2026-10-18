@@ -735,7 +735,7 @@ Recommended PDI
 
                                     icon: "🛡️",
 
-                                    value: "Independent",
+                                    value: "Independent Inspections",
 
                                     label: "No Dealership TieUps.",
 
