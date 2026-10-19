@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 
 import { useBooking } from "@/app/context/BookingContext";
@@ -236,9 +237,9 @@ export default function Home() {
 
             \===================================================== */}
 
-            <section className="relative max-w-7xl mx-auto px-6 pt-16 pb-24">
+            <section className="relative max-w-7xl mx-auto px-6 pt-12 pb-20">
 
-                <div className="grid lg:grid-cols-2 gap-20 items-center">
+                <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-12 xl:gap-14">
 
                     {/* =================================================
 
@@ -266,7 +267,7 @@ export default function Home() {
 
                         </div>
 
-                        <h1 className="mt-10 text-5xl md:text-7xl font-black tracking-tight leading-[0.92]">
+                        <h1 className="mt-7 text-5xl md:text-6xl xl:text-7xl font-black tracking-tight leading-[0.98]">
 
                             Your New Car
 
@@ -284,7 +285,7 @@ export default function Home() {
 
                         </h1>
 
-                        <p className="mt-8 max-w-xl text-lg leading-8 text-slate-600">
+                        <p className="mt-6 max-w-xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
 
                             Independent 400 point
 
@@ -314,7 +315,7 @@ export default function Home() {
 
                         <div
 
-                            className={`mt-8 grid grid-cols-1 ${isPune ? "sm:grid-cols-3" : "sm:grid-cols-2"} gap-3 max-w-2xl`}
+                            className={`mt-6 grid grid-cols-1 ${isPune ? "sm:grid-cols-3" : "sm:grid-cols-2"} gap-3 w-full max-w-2xl`} 
 
                         >
 
@@ -486,7 +487,7 @@ Recommended PDI
 
                         </div>
 
-                        <div className="mt-10 flex flex-col sm:flex-row gap-5">
+                        <div className="mt-7 flex flex-col sm:flex-row flex-wrap gap-3">
 
                             <button
 
@@ -526,52 +527,6 @@ Recommended PDI
 
                         </div>
 
-                        {/* QUICK STATS */}
-
-                        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3">
-
-                            {[
-
-                                ["400", "Checks"],
-
-                                ["5000+", "Cars"],
-
-                                ["4.9★", "Rating"],
-
-                                ["100%", "Independent"],
-
-                            ].map(
-
-                                ([v, l]) => (
-
-                                    <div
-
-                                        key={l}
-
-                                        className="rounded-2xl border border-white/60 bg-white/70 p-5 backdrop-blur-xl shadow-lg transition hover:-translate-y-2 hover:shadow-2xl"
-
-                                    >
-
-                                        <div className="text-2xl font-black text-[#6366F1]">
-
-                                            {v}
-
-                                        </div>
-
-                                        <div className="mt-1 text-xs uppercase tracking-[0.2em] text-slate-500">
-
-                                            {l}
-
-                                        </div>
-
-                                    </div>
-
-                                )
-
-                            )}
-
-                        </div>
-
                     </div>
 
                     {/* =================================================
@@ -580,136 +535,40 @@ Recommended PDI
 
                     \================================================= */}
 
-                    <div className="relative">
 
-                        <div className="absolute -inset-8 rounded-[3rem] bg-gradient-to-r from-[#6366F1]/20 to-[#818CF8]/20 blur-3xl" />
 
-                        <div className="relative overflow-hidden rounded-[3rem] border border-white/70 bg-white p-4 shadow-[0_30px_80px_rgba(0,0,0,0.15)]">
+<div className="relative isolate mx-auto w-full max-w-[620px] lg:mt-[4.5rem]">
+    <div className="relative aspect-[3/2] w-full overflow-hidden rounded-[2rem] bg-[#06152f] shadow-[0_30px_80px_rgba(0,0,0,0.15)] lg:rounded-[2.3rem]">
+    <Image
+        src="/new-cars-pdi.png"
+        alt={`Professional new-car pre-delivery inspection in ${selectedCity}`}
+        width={1536}
+        height={1024}
+        priority
+        sizes="(max-width: 1024px) 100vw, 50vw"
+        className="absolute inset-0 h-full w-full object-contain object-center"
+    />
+    </div>
 
-                            <div className="car-scan-stage relative h-[320px] sm:h-[450px] lg:h-[650px] w-full overflow-hidden rounded-[2rem] lg:rounded-[2.3rem] bg-slate-950 text-white">
-                                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_55%,rgba(14,116,214,0.5),transparent_60%),linear-gradient(135deg,#020617,#0b2a59_55%,#06142c)]" />
-                                <div className="scan-grid absolute inset-0 opacity-30" />
-                                <div className="scan-orbit scan-orbit-one" />
-                                <div className="scan-orbit scan-orbit-two" />
-                                <div className="scan-ring" />
-                                <div className="scan-beam" />
-                                <div className="absolute inset-x-4 top-5 z-10 text-center sm:top-7">
-                                    <p className="text-[9px] font-black uppercase tracking-[0.35em] text-cyan-300 sm:text-xs">InspectMyCar • Advanced Scan</p>
-                                    <h3 className="mt-2 text-xl font-black tracking-tight text-white sm:text-3xl">360° Vehicle Inspection</h3>
-                                    <p className="mt-1 text-xs text-blue-100 sm:text-sm">Every angle. Every detail.</p>
-                                </div>
-                                <div className="scan-car-anchor absolute z-[2] w-[94%] max-w-[620px]">
-                                <div className="scan-view-stack relative w-full" role="img" aria-label="Blue sedan shown from front, right side, rear, and left side during a 360 degree vehicle scan">
-                                  {/* RIGHT SIDE VIEW */}
-                                  <svg className="scan-view scan-view-side scan-sedan block w-full" viewBox="0 0 760 360" aria-hidden="true">
-                                    <defs>
-                                      <linearGradient id="sideBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#b8efff"/><stop offset="22%" stopColor="#32b9f4"/><stop offset="58%" stopColor="#1676c8"/><stop offset="100%" stopColor="#07366f"/></linearGradient>
-                                      <linearGradient id="sideGlass" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#123d68"/><stop offset="55%" stopColor="#06172f"/><stop offset="100%" stopColor="#2786b8"/></linearGradient>
-                                      <filter id="sideGlow"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-                                    </defs>
-                                    <ellipse cx="380" cy="292" rx="290" ry="28" fill="#168bff" opacity=".25" />
-                                    <path d="M82 232 L108 183 Q119 166 157 160 L231 151 L292 85 Q314 61 358 57 L488 57 Q530 59 556 91 L609 155 L654 171 Q680 181 695 211 L710 236 Q715 251 697 258 L652 264 L118 264 L82 252 Q73 245 82 232Z" fill="url(#sideBody)" stroke="#54dcff" strokeWidth="5" filter="url(#sideGlow)"/>
-                                    <path d="M246 146 L304 88 Q320 72 358 70 L408 70 L408 148Z" fill="url(#sideGlass)" stroke="#79e6ff" strokeWidth="3"/><path d="M422 70 L486 70 Q517 72 536 98 L574 148 L422 148Z" fill="url(#sideGlass)" stroke="#79e6ff" strokeWidth="3"/><path d="M413 70 L413 151" stroke="#9cecff" strokeWidth="5"/>
-                                    <path d="M112 190 Q166 173 222 171 L594 171 Q636 174 666 202 L682 224 L626 229 L128 229 L95 220Z" fill="#197dcc" opacity=".6"/><path d="M420 157 L420 251 M553 161 L573 226" stroke="#8feaff" strokeWidth="3"/><path d="M458 185 L489 185 M523 185 L554 185" stroke="#d5f8ff" strokeWidth="5" strokeLinecap="round"/><path d="M92 219 L126 208 L133 225 L95 235Z" fill="#ff6983"/><path d="M650 205 L681 215 L688 232 L658 226Z" fill="#d7fbff"/><path d="M150 263 L620 263" stroke="#69e8ff" strokeWidth="5"/>
-                                    {[220,575].map((cx) => <g key={cx}><circle cx={cx} cy="260" r="56" fill="#06182e" stroke="#4bdcff" strokeWidth="7"/><circle cx={cx} cy="260" r="39" fill="#102f4b" stroke="#b3f4ff" strokeWidth="4"/>{Array.from({length:8},(_,i)=><line key={i} x1={cx} y1="225" x2={cx} y2="295" stroke="#8cecff" strokeWidth="4" transform={`rotate(${i*45} ${cx} 260)`}/>)}<circle cx={cx} cy="260" r="10" fill="#45d9ff"/></g>)}
-                                  </svg>
-                                  {/* FRONT VIEW */}
-                                  <svg className="scan-view scan-view-front scan-sedan block w-full" viewBox="0 0 760 360" aria-hidden="true">
-                                    <defs><linearGradient id="frontBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#b8efff"/><stop offset=".4" stopColor="#32b9f4"/><stop offset="1" stopColor="#07366f"/></linearGradient><linearGradient id="frontGlass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#287ba8"/><stop offset="1" stopColor="#06172f"/></linearGradient></defs>
-                                    <ellipse cx="380" cy="300" rx="190" ry="22" fill="#168bff" opacity=".3"/><path d="M205 276 L220 209 Q230 174 268 150 L296 91 Q309 65 344 58 L416 58 Q451 65 464 91 L492 150 Q530 174 540 209 L555 276 Q510 303 380 306 Q250 303 205 276Z" fill="url(#frontBody)" stroke="#54dcff" strokeWidth="5"/>
-                                    <path d="M287 151 L309 94 Q317 77 345 74 L415 74 Q443 77 451 94 L473 151 Q380 139 287 151Z" fill="url(#frontGlass)" stroke="#8feaff" strokeWidth="4"/><path d="M245 184 Q286 166 323 178 L309 209 Q277 217 237 208Z" fill="#e7fbff" stroke="#55ddff" strokeWidth="4"/><path d="M515 184 Q474 166 437 178 L451 209 Q483 217 523 208Z" fill="#e7fbff" stroke="#55ddff" strokeWidth="4"/><path d="M302 224 Q380 211 458 224 L447 266 Q380 279 313 266Z" fill="#06213d" stroke="#72e5ff" strokeWidth="4"/><path d="M321 237 L439 237 M328 248 L432 248 M338 259 L422 259" stroke="#2ba8df" strokeWidth="4"/><rect x="352" y="274" width="56" height="12" rx="4" fill="#d7fbff"/><path d="M224 253 L252 267 M536 253 L508 267" stroke="#b8efff" strokeWidth="5"/><path d="M246 290 Q380 316 514 290" fill="none" stroke="#69e8ff" strokeWidth="5"/>
-                                  </svg>
-                                  {/* REAR VIEW */}
-                                  <svg className="scan-view scan-view-rear scan-sedan block w-full" viewBox="0 0 760 360" aria-hidden="true">
-                                    <defs><linearGradient id="rearBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#b8efff"/><stop offset=".4" stopColor="#238ed9"/><stop offset="1" stopColor="#062c60"/></linearGradient><linearGradient id="rearGlass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#2786b8"/><stop offset="1" stopColor="#06172f"/></linearGradient></defs>
-                                    <ellipse cx="380" cy="300" rx="190" ry="22" fill="#168bff" opacity=".3"/><path d="M205 276 L220 209 Q230 174 268 150 L296 91 Q309 65 344 58 L416 58 Q451 65 464 91 L492 150 Q530 174 540 209 L555 276 Q510 303 380 306 Q250 303 205 276Z" fill="url(#rearBody)" stroke="#54dcff" strokeWidth="5"/>
-                                    <path d="M287 151 L309 94 Q317 77 345 74 L415 74 Q443 77 451 94 L473 151 Q380 139 287 151Z" fill="url(#rearGlass)" stroke="#8feaff" strokeWidth="4"/><path d="M237 184 Q277 166 311 178 L300 213 Q267 221 230 207Z" fill="#ff667e" stroke="#ffb4c2" strokeWidth="4"/><path d="M523 184 Q483 166 449 178 L460 213 Q493 221 530 207Z" fill="#ff667e" stroke="#ffb4c2" strokeWidth="4"/><path d="M275 229 Q380 214 485 229 L477 252 Q380 266 283 252Z" fill="#0b4779" stroke="#69dfff" strokeWidth="3"/><rect x="328" y="257" width="104" height="26" rx="4" fill="#d8f7ff" stroke="#58d8ff" strokeWidth="3"/><path d="M224 253 L252 267 M536 253 L508 267" stroke="#b8efff" strokeWidth="5"/><path d="M246 290 Q380 316 514 290" fill="none" stroke="#69e8ff" strokeWidth="5"/><path d="M302 278 L458 278" stroke="#ff667e" strokeWidth="5"/>
-                                  </svg>
-                                  {/* LEFT SIDE VIEW */}
-                                  <svg className="scan-view scan-view-left scan-sedan block w-full" viewBox="0 0 760 360" aria-hidden="true">
-                                    <defs><linearGradient id="leftBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#b8efff"/><stop offset="22%" stopColor="#32b9f4"/><stop offset="58%" stopColor="#1676c8"/><stop offset="100%" stopColor="#07366f"/></linearGradient><linearGradient id="leftGlass" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#123d68"/><stop offset="55%" stopColor="#06172f"/><stop offset="100%" stopColor="#2786b8"/></linearGradient></defs>
-                                    <g transform="translate(760 0) scale(-1 1)"><ellipse cx="380" cy="292" rx="290" ry="28" fill="#168bff" opacity=".25"/><path d="M82 232 L108 183 Q119 166 157 160 L231 151 L292 85 Q314 61 358 57 L488 57 Q530 59 556 91 L609 155 L654 171 Q680 181 695 211 L710 236 Q715 251 697 258 L652 264 L118 264 L82 252 Q73 245 82 232Z" fill="url(#leftBody)" stroke="#54dcff" strokeWidth="5"/><path d="M246 146 L304 88 Q320 72 358 70 L408 70 L408 148Z" fill="url(#leftGlass)" stroke="#79e6ff" strokeWidth="3"/><path d="M422 70 L486 70 Q517 72 536 98 L574 148 L422 148Z" fill="url(#leftGlass)" stroke="#79e6ff" strokeWidth="3"/><path d="M413 70 L413 151" stroke="#9cecff" strokeWidth="5"/><path d="M112 190 Q166 173 222 171 L594 171 Q636 174 666 202 L682 224 L626 229 L128 229 L95 220Z" fill="#197dcc" opacity=".6"/><path d="M420 157 L420 251 M553 161 L573 226" stroke="#8feaff" strokeWidth="3"/><path d="M458 185 L489 185 M523 185 L554 185" stroke="#d5f8ff" strokeWidth="5" strokeLinecap="round"/><path d="M92 219 L126 208 L133 225 L95 235Z" fill="#ff6983"/><path d="M650 205 L681 215 L688 232 L658 226Z" fill="#d7fbff"/><path d="M150 263 L620 263" stroke="#69e8ff" strokeWidth="5"/>{[220,575].map((cx) => <g key={cx}><circle cx={cx} cy="260" r="56" fill="#06182e" stroke="#4bdcff" strokeWidth="7"/><circle cx={cx} cy="260" r="39" fill="#102f4b" stroke="#b3f4ff" strokeWidth="4"/><circle cx={cx} cy="260" r="10" fill="#45d9ff"/></g>)}</g>
-                                  </svg>
-                                </div>
-                                </div>
-<div className="scan-label scan-label-body">
-  <span />BODY SCAN
+    {/* QUICK STATS — placed below the hero image */}
+    <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {[
+            ["400", "Checks"],
+            ["5000+", "Cars"],
+            ["4.9★", "Rating"],
+            ["100%", "Independent"],
+        ].map(([v, l]) => (
+            <div
+                key={l}
+                className="rounded-2xl border border-white/60 bg-white/80 p-4 shadow-lg backdrop-blur-xl transition hover:-translate-y-1 hover:shadow-xl sm:p-5"
+            >
+                <div className="text-xl font-black text-[#6366F1] sm:text-2xl">{v}</div>
+                <div className="mt-1 text-[10px] uppercase tracking-[0.16em] text-slate-500 sm:text-xs sm:tracking-[0.2em]">{l}</div>
+            </div>
+        ))}
+    </div>
 </div>
 
-<div className="scan-label scan-label-analysis">
-  <span />VEHICLE ANALYSIS
-</div>
-
-<div className="scan-label scan-label-wheel">
-  <span />WHEEL CHECK
-</div>
-
-<div className="scan-label scan-label-interior">
-  <span />INTERIOR SCAN
-</div>
-
-<div className="scan-label scan-label-underbody">
-  <span />UNDERBODY ANALYSIS
-</div>
-
-<div className="scan-label scan-label-engine">
-  <span />ENGINE CHECK
-</div>
-                                <div className="absolute bottom-5 left-0 right-0 z-10 flex items-center justify-center gap-2 text-[9px] font-black uppercase tracking-[0.18em] text-blue-100 sm:bottom-7 sm:text-xs sm:tracking-[0.22em]"><span className="h-2.5 w-2.5 animate-pulse rounded-full bg-indigo-600 shadow-[0_0_14px_#6366f1]" /> <span className="text-indigo-600">SCANNING VEHICLE</span> <span className="mx-1 h-4 w-px bg-indigo-400" /> <span className="text-indigo-600">360° ACTIVE</span></div>
-                                <style jsx>{`
-                                    .scan-grid { background-image: linear-gradient(rgba(56,189,248,.12) 1px, transparent 1px), linear-gradient(90deg, rgba(56,189,248,.12) 1px, transparent 1px); background-size: 28px 28px; mask-image: linear-gradient(transparent, black 25%, black 85%, transparent); }
-                                    .scan-beam { position:absolute; z-index:4; top:30%; bottom:18%; left:18%; width:3px; background:#67e8f9; box-shadow:0 0 12px #22d3ee,0 0 32px #0891b2; animation:beamSweep 4.5s ease-in-out infinite alternate; }
-                                    .scan-beam:before { content:''; position:absolute; top:0; bottom:0; left:-42px; width:44px; background:linear-gradient(90deg,transparent,rgba(34,211,238,.22)); }
-                                    .scan-orbit { position:absolute; left:50%; top:56%; width:86%; height:24%; border:1px dashed rgba(34,211,238,.65); border-radius:50%; transform:translate(-50%,-50%) rotate(-13deg); }
-                                    .scan-orbit-one { animation:orbitSpin 14s linear infinite; } .scan-orbit-two { width:65%; height:38%; border-color:rgba(59,130,246,.55); transform:translate(-50%,-50%) rotate(27deg); animation:orbitSpin 18s linear infinite reverse; }
-                                    .scan-ring { position:absolute; left:68%; top:58%; width:90px; height:90px; border:2px dashed rgba(34,211,238,.6); border-radius:50%; animation:ringPulse 2.2s ease-in-out infinite; }
-                                    .scan-target { transform-origin:413px 70px; animation:ringPulse 1.8s ease-in-out infinite; }
-                                    .scan-label { position:absolute; z-index:5; display:flex; align-items:center; gap:7px; border:1px solid rgba(34,211,238,.5); border-radius:9px; background:rgba(2,18,43,.82); padding:7px 9px; color:#dbeafe; font-size:8px; font-weight:900; letter-spacing:.08em; box-shadow:0 0 18px rgba(8,145,178,.12); }
-                                    .scan-label span { width:7px; height:7px; flex:none; border-radius:50%; background:#22d3ee; box-shadow:0 0 9px #22d3ee; }
-                                    /* Each inspection label has its own anchor around the vehicle. */
-                                    .scan-label-body { left:2%; top:42%; animation:labelFloat 3s ease-in-out infinite; }
-                                    .scan-label-analysis { right:2%; top:30%; animation:labelFloat 3.4s ease-in-out infinite reverse; }
-                                    .scan-label-wheel { right:2%; bottom:24%; animation:labelFloat 3.2s ease-in-out infinite; }
-                                    .scan-label-interior { left:3%; top:23%; animation:labelFloat 3.6s ease-in-out infinite reverse; }
-                                    .scan-label-underbody { right:8%; bottom:9%; animation:labelFloat 3.1s ease-in-out infinite; }
-                                    .scan-label-engine { left:8%; bottom:10%; animation:labelFloat 3.3s ease-in-out infinite reverse; }
-                                    .scan-car-anchor { left:50%; top:53%; perspective:1000px; transform:translate3d(-50%,-50%,0) !important; transform-origin:center center; }
-                                    .scan-view-stack { aspect-ratio: 760 / 360; }
-                                    .scan-view { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; opacity:0; animation-duration:12s; animation-timing-function:steps(1,end); animation-iteration-count:infinite; }
-                                    .scan-view-side { animation-name: sideCycle; }
-                                    .scan-view-front { animation-name: frontCycle; }
-                                    .scan-view-rear { animation-name: rearCycle; }
-                                    .scan-view-left { animation-name: leftCycle; }
-                                    @keyframes sideCycle { 0%,24.99% { opacity:0; } 25%,49.99% { opacity:1; } 50%,100% { opacity:0; } }
-                                    @keyframes frontCycle { 0%,24.99% { opacity:1; } 25%,100% { opacity:0; } }
-                                    @keyframes rearCycle { 0%,49.99% { opacity:0; } 50%,74.99% { opacity:1; } 75%,100% { opacity:0; } }
-                                    @keyframes leftCycle { 0%,74.99% { opacity:0; } 75%,99.99% { opacity:1; } 100% { opacity:0; } }
-                                    /* Fixed center anchor; only the separate vehicle illustrations cross-fade. */
-                                    @keyframes beamSweep { from { left:18%; opacity:.65; } to { left:82%; opacity:1; } }
-                                    @keyframes orbitSpin { to { rotate:360deg; } } @keyframes ringPulse { 0%,100% { opacity:.45; scale:.92; } 50% { opacity:1; scale:1.08; } } @keyframes labelFloat { 0%,100% { translate:0 0; } 50% { translate:0 -5px; } }
-                                    @media (min-width:640px) { .scan-label { font-size:10px; padding:9px 12px; } }
-                                    @media (max-width:639px) {
-                                      .scan-label { gap:4px; padding:6px 7px; font-size:7px; letter-spacing:.035em; }
-                                      .scan-label-body { left:1%; top:42%; }
-                                      .scan-label-analysis { right:1%; top:29%; }
-                                      .scan-label-wheel { right:1%; bottom:23%; }
-                                      .scan-label-interior { left:1%; top:20%; }
-                                      .scan-label-underbody { right:1%; bottom:8%; }
-                                      .scan-label-engine { left:1%; bottom:9%; }
-                                    }
-                                    @media (prefers-reduced-motion:reduce) { .scan-beam,.scan-orbit,.scan-ring,.scan-target,.scan-label,.scan-view { animation:none!important; } .scan-view { opacity:0!important; } .scan-view-front { opacity:1!important; } }
-                                `}</style>
-                            </div>
-
-                            <div className="relative mt-4 lg:absolute lg:bottom-10 lg:left-10 lg:right-10 rounded-2xl lg:rounded-[2rem] border border-white/50 bg-white/90 p-4 sm:p-5 lg:p-6 backdrop-blur-xl shadow-xl">
-
-
-
-                            </div>
-
-                        </div>
-
-                    </div>
 
                 </div>
 
