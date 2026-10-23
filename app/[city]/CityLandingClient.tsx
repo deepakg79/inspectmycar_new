@@ -1374,7 +1374,7 @@ export default function CityLandingClient({
 
                       <p className="font-bold text-emerald-800">
 
-                        EV • With Gauge
+                        EV Cars
 
                       </p>
 
