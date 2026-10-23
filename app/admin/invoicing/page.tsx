@@ -1406,14 +1406,6 @@ if (logoData) {
 
           <div>
 
-            <p className="text-xs font-extrabold uppercase tracking-[0.28em] text-violet-600">
-
-              InspectMyCar Admin
-
-            </p>
-
-
-
             <h1 className="mt-2 text-5xl font-black tracking-[-0.055em] text-[#10172b] sm:text-6xl">
 
               Customer <span className="italic text-violet-600">Invoices</span>
