@@ -457,15 +457,17 @@ export default function InvoicingPage() {
 
 
   function openCancellationInvoice() {
+    // Clicking the button again closes the cancellation form and returns to normal bookings.
+    if (showCancellationInvoice) {
+      setShowCancellationInvoice(false);
+      resetMessages();
+      return;
+    }
 
     setShowCancellationInvoice(true);
-
     setCancellationSearch("");
-
     setCancellationBooking(null);
-
     resetMessages();
-
   }
 
 
